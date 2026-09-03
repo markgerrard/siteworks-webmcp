@@ -1,0 +1,92 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--slate:#2F3A45;--steel:#4A6F8F;--sky:#5FB3D9;--surface:#fff;--alt:#F5F7F9;--border:#DDE1E6;--muted:#8A9096}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:900px;height:1000px}
+  body{background:var(--alt);font-family:Inter,system-ui,sans-serif;color:var(--slate);-webkit-font-smoothing:antialiased}
+  .stage{position:relative;width:900px;height:724px;padding:34px 36px}
+  .rows{display:flex;flex-direction:column;gap:16px}
+  .row{display:flex;align-items:stretch}
+  .caller{width:196px;flex:none;background:var(--surface);border:1px solid var(--border);
+          border-left:4px solid var(--sky);border-radius:8px;padding:13px 15px;display:flex;
+          flex-direction:column;justify-content:center}
+  .caller .n{font-family:'Space Grotesk',Inter,sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.01em;line-height:1.2}
+  .caller .s{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.3}
+  .link{width:40px;flex:none;position:relative}
+  .link::before{content:'';position:absolute;left:0;right:9px;top:50%;height:2px;background:var(--border)}
+  .link::after{content:'';position:absolute;right:0;top:calc(50% - 5px);border-left:9px solid var(--border);
+               border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .front{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:9px;
+         padding:13px 17px;box-shadow:0 1px 2px rgba(47,58,69,.05)}
+  .front .hd{display:flex;align-items:center;gap:9px}
+  .tag{font-family:'Space Grotesk',Inter,sans-serif;font-size:10px;font-weight:700;letter-spacing:.13em;
+       text-transform:uppercase;color:var(--steel);background:rgba(95,179,217,.2);border-radius:4px;padding:3px 7px;white-space:nowrap}
+  .front .t{font-family:'Space Grotesk',Inter,sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.01em}
+  .front .c{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;margin-top:7px;line-height:1.65}
+  .front .c em{font-style:normal;color:var(--muted)}
+  .join{height:44px;position:relative}
+  .join svg{position:absolute;left:0;top:0}
+  .core{background:var(--slate);color:#fff;border-radius:11px;padding:20px 24px 18px}
+  .core .k{font-family:'Space Grotesk',Inter,sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;
+           text-transform:uppercase;color:var(--sky)}
+  .core h2{font-family:'Space Grotesk',Inter,sans-serif;font-size:24px;font-weight:600;margin-top:5px;letter-spacing:-.015em}
+  .core .sub{font-size:13px;color:rgba(255,255,255,.62);margin-top:4px}
+  .core ul{list-style:none;margin-top:14px;border-top:1px solid rgba(255,255,255,.16)}
+  .core li{padding:8px 0 8px 18px;border-bottom:1px solid rgba(255,255,255,.1);position:relative;font-size:13px;line-height:1.35}
+  .core li:last-child{border-bottom:0}
+  .core li::before{content:'';position:absolute;left:0;top:14px;width:7px;height:7px;border-radius:2px;background:var(--sky)}
+  .core li span{color:rgba(255,255,255,.6)}
+  .core li b{font-weight:600}
+  .foot{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.4;display:flex;justify-content:space-between;gap:20px}
+  .foot b{color:var(--steel);font-weight:600}
+</style></head>
+<body><div class="stage">
+  <div class="rows">
+    <div class="row">
+      <div class="caller"><div class="n">Human UI</div><div class="s">Editor shell &middot; session auth</div></div>
+      <div class="link"></div>
+      <div class="front"><div class="hd"><span class="tag">Front 1</span><span class="t">JSON routes</span></div>
+        <div class="c">editor shell endpoints <em>&middot; session auth &middot; CSRF</em></div></div>
+    </div>
+    <div class="row">
+      <div class="caller"><div class="n">WebMCP tools</div><div class="s">ChatGPT &amp; other in-browser agents</div></div>
+      <div class="link"></div>
+      <div class="front"><div class="hd"><span class="tag">Front 2</span><span class="t">Browser tools</span></div>
+        <div class="c">document.modelContext.registerTool(&hellip;)<br><em>top-level shell page only &rarr; fetches Front 1</em></div></div>
+    </div>
+    <div class="row">
+      <div class="caller"><div class="n">Backend agent</div><div class="s">MCP client &middot; portal session</div></div>
+      <div class="link"></div>
+      <div class="front"><div class="hd"><span class="tag">Front 3</span><span class="t">MCP server</span></div>
+        <div class="c">POST /mcp/editor <em>&middot; laravel/mcp</em><br><em>portal session (login required)</em></div></div>
+    </div>
+  </div>
+
+  <div class="join">
+    <svg width="828" height="44" viewBox="0 0 828 44" fill="none">
+      <path d="M414 0 V30" stroke="#DDE1E6" stroke-width="2"/>
+      <path d="M409 30 l5 10 5 -10 z" fill="#DDE1E6"/>
+    </svg>
+  </div>
+
+  <div class="core">
+    <div class="k">One operations layer</div>
+    <h2>EditorOperations</h2>
+    <div class="sub">18 named operations &mdash; 5 reads, 13 draft-only writes. One code path for all three fronts.</div>
+    <ul>
+      <li><b>SitePolicy</b> <span>&mdash; view / update, per site</span></li>
+      <li><b>AgentToolsGate</b> <span>&mdash; feature flag + role + channel</span></li>
+      <li><b>Drafts only</b> <span>&mdash; never publishes, never invalidates the public cache</span></li>
+      <li><b>Optimistic concurrency</b> <span>&mdash; revision_base &middot; composition_revision &middot; structure_epoch</span></li>
+      <li><b>editor_operation_log</b> <span>&mdash; one audit row per call, not flag-gated</span></li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <span>The preview iframe never calls admin endpoints &mdash; it <b>postMessage</b>s the parent; the parent <b>fetch</b>es.</span>
+    <span style="white-space:nowrap">SiteWorks &mdash; WebMCP</span>
+  </div>
+</div></body></html>

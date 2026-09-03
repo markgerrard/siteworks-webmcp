@@ -1,0 +1,23 @@
+/*
+ * Compiled Tailwind for the public site renderer (site/page.blade.php and
+ * everything under views/site). Replaces the Play CDN script — theming is
+ * entirely CSS custom properties injected by the renderer, so no @theme
+ * block is needed here; the scan scope is deliberately limited to the
+ * site templates so client pages only pay for utilities they use.
+ */
+@import 'tailwindcss';
+
+@source '../views/site';
+@source '../views/shop';
+@source '../views/components/shop';
+@source '../../app/Services/Site';
+@source '../../app/Support';
+@source inline("tracking-[0.1em] !text-[0.8125rem] text-white/70 h-[6.46875rem] h-[5.9375rem] h-[5.375rem] h-[4.95rem] h-[4rem] h-[3.5rem] md:h-[9.75rem] md:h-[8.875rem] md:h-[8rem] md:h-[7.3rem] md:h-[4.5rem] md:h-[4rem] h-[8.75rem] h-[7.875rem] h-[7.5rem] h-[6.75rem] h-[9.375rem] h-[10.9375rem] h-[8.4375rem] h-[9.84375rem] h-[5rem] h-[5.75rem] h-[4.25rem] h-[4.75rem] md:h-[10.9375rem] md:h-[4.75rem] md:h-[5.75rem] md:h-[7.875rem] md:h-[8.75rem] md:h-[9.84375rem]");
+@source inline("first:rounded-l-md last:rounded-r-md -ml-px first:ml-0 bg-white/[0.12] hover:bg-white/20 placeholder-white/50 placeholder-white text-white/80 text-white/85 text-white border-white/70 ring-[var(--brand-accent)] [background-color:color-mix(in_oklab,var(--color-band)_8%,white)] hover:[background-color:color-mix(in_oklab,var(--color-band)_14%,white)] md:w-auto md:ml-auto justify-center text-red-300 text-red-50 [&>option]:text-gray-900");
+@source inline("max-w-[640px] bg-white/10 text-white/80 text-white/60 bg-black/5 text-white/70 border-white/30 border-white/15 bg-white/5 border-black/5");
+@source inline("md:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] items-end md:col-span-3 lg:col-span-12");
+@source inline("min-h-[80vh] lg:min-h-screen");
+/* Hero title clamps are composed at render from ThemeResolver hero_*_clamp_cap (standard + grand): keep every combination in the bundle. */
+@source inline("text-[clamp(1.875rem,3.5vw,3.75rem)] text-[clamp(1.875rem,3.5vw,4.5rem)] text-[clamp(1.875rem,3vw,3rem)] text-[clamp(1.875rem,3vw,3.75rem)]");
+@source inline("from-black/75 via-black/55 to-black/30");
+@source inline("tracking-[0.12em] px-8 w-6 lg:col-span-5 lg:col-span-7 border-t opacity-60 py-4");

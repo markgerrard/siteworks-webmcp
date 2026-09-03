@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="FORCE_HTTPS" value="false"/>
+        <env name="DEMO_MODE" value="false" force="true"/>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="BROADCAST_CONNECTION" value="null"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
+        <env name="APP_KEY" value="base64:AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=" force="true"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <!-- Pin storage to local so the suite never touches the live
+             Spaces bucket even when .env has FILESYSTEM_DISK=s3.
+             MEDIA_DISK is the dedicated media seam; keep it local too
+             so existing Storage::fake(default) tests stay valid. -->
+        <env name="FILESYSTEM_DISK" value="local" force="true"/>
+        <env name="MEDIA_DISK" value="local" force="true"/>
+        <!-- Private media follows the media disk in tests; a demo env file
+             would otherwise pin it to a separate disk. -->
+        <env name="MEDIA_PRIVATE_DISK" value="(null)" force="true"/>
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="CLOUDFLARE_API_TOKEN" value="test-fake-token" force="true"/>
+        <env name="CLOUDFLARE_ACCOUNT_ID" value="test-fake-account" force="true"/>
+        <!-- Preview-host Feature tests pin fixture brand apexes; config defaults stay empty. -->
+        <env name="CLOUDFLARE_A_APEX" value="brand-a.example" force="true"/>
+        <env name="CLOUDFLARE_B_APEX" value="brand-b.example" force="true"/>
+        <env name="CLOUDFLARE_A_SUBDOMAIN" value="d" force="true"/>
+        <env name="CLOUDFLARE_B_SUBDOMAIN" value="d" force="true"/>
+        <env name="STRIPE_SECRET" value="sk_test_fake" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRET" value="whsec_test_fake" force="true"/>
+        <!-- Tests run inside agents-app (compose env: SURFACE=agents) but
+             should see every route file so cross-surface assertions work —
+             e.g. the customer-domain /team route or the site-public preview
+             routes. force="true" overrides the OS-level SURFACE the
+             container injects. -->
+        <env name="SURFACE" value="all" force="true"/>
+        <!-- Default APP_URL to the agent subdomain so tests that call
+             $this->get('/path') match the domain-pinned staff routes. Tests
+             that target the primary domain (client / Fortify) set HTTP_HOST
+             explicitly via withServerVariables(). -->
+        <env name="APP_URL" value="http://agents.domain.com" force="true"/>
+        <env name="APP_PRIMARY_DOMAIN" value="app.domain.com" force="true"/>
+        <env name="APP_AGENT_DOMAIN" value="agents.domain.com" force="true"/>
+        <env name="APP_CUSTOMER_DOMAIN" value="customer.domain.com" force="true"/>
+        <env name="APP_EDITOR_PREVIEW_DOMAIN" value="editor-preview.domain.com" force="true"/>
+        <!-- MCP HTTP routes register when this flag is on.
+             Client-portal and roles stay at production defaults so Feature tests that
+             open those gates do so explicitly via config(). -->
+        <env name="EDITOR_AGENT_TOOLS" value="true" force="true"/>
+        <env name="EDITOR_AGENT_TOOLS_CLIENT_PORTAL" value="false" force="true"/>
+        <env name="EDITOR_AGENT_TOOLS_ROLES" value="staff" force="true"/>
+    </php>
+</phpunit>

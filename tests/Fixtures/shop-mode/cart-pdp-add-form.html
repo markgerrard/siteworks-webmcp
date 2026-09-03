@@ -1,0 +1,56 @@
+<form
+                        method="POST"
+                        action="/shop/cart/add"
+                        data-product-name="Strawberry Conserve"
+                        x-data="{ added: false, error: '' }"
+                        @shop-cart-add="added = $event.detail.ok; error = $event.detail.ok ? '' : ($event.detail.message || '')"
+                        class="space-y-4"
+                        
+                    >
+                        <input type="hidden" name="_token" value="__CSRF__" autocomplete="off">                        <input type="hidden" name="product_slug" value="conserve">
+
+                                                    <input type="hidden" name="variant_id" value="__VID__">
+                        
+                        
+                        <label class="block">
+                            <span class="text-sm font-medium">Quantity</span>
+                            <span class="mt-1 block">
+                                <div x-data="{ qty: 1 }" class="inline-flex items-center">
+    <button
+        type="button"
+        aria-label="Decrease quantity"
+        @click="qty = Math.max(1, Number(qty) - 1)"
+        class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style="min-width: 44px; min-height: 44px; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: transparent; outline-color: var(--color-accent);"
+    >−</button>
+    <input
+        type="number"
+        name="qty"
+        inputmode="numeric"
+        min="1"
+        max="99"
+        value="1"
+        x-model.number="qty"
+        class="tabular-nums text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style="min-width: 44px; min-height: 44px; width: 4rem; color: var(--color-text); border: 1px solid var(--color-border); background-color: transparent; outline-color: var(--color-accent);"
+    >
+    <button
+        type="button"
+        aria-label="Increase quantity"
+        @click="qty = Math.min(99, Number(qty) + 1)"
+        class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style="min-width: 44px; min-height: 44px; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: transparent; outline-color: var(--color-accent);"
+    >+</button>
+</div>
+                            </span>
+                        </label>
+
+                        <button
+                            type="submit"
+                            class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                            style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 1.5rem; background-color: var(--color-primary); color: var(--color-text-on-primary); border-radius: var(--radius-button); outline-color: var(--color-accent);"
+                        >Add to cart</button>
+
+                        <p role="status" x-cloak x-show="added" class="mt-2">Added to cart</p>
+                        <p role="alert" x-cloak x-show="error" class="mt-2" x-text="error"></p>
+                    </form>

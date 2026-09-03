@@ -1,0 +1,22 @@
+{
+    "primary": "#2e4429",
+    "primary_text": "#2e4429",
+    "primary_text_on_alt": "#2e4429",
+    "accent": "#a6763c",
+    "accent_text": "#906634",
+    "accent_text_on_alt": "#815b2e",
+    "tertiary": "#8a7f63",
+    "surface": "#f7f3ea",
+    "surface_alt": "#efe7d6",
+    "border": "#dfd5c0",
+    "text": "#1f1b14",
+    "text_on_alt": "#1f1b14",
+    "text_muted": "#5c5343",
+    "text_muted_on_alt": "#5c5343",
+    "band": "#172b12",
+    "text_on_band": "#ffffff",
+    "band_overlay": "#172b12",
+    "band_mode": "dark",
+    "text_on_primary": "#ffffff",
+    "text_on_accent": "#ebebeb"
+}

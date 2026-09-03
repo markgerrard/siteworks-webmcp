@@ -1,0 +1,35 @@
+<div
+    class="shop-product-card relative block overflow-hidden max-w-full"
+    style="border: 1px solid var(--color-border); border-radius: var(--radius-card); position: relative;"
+>
+    <a
+        href="/products/conserve"
+        class="block overflow-hidden max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style="outline-color: var(--color-accent);"
+    >
+        <div class="shop-product-card__image w-full overflow-hidden" style="aspect-ratio: 1 / 1; background-color: var(--color-surface-alt);">
+                            <img
+                    src="/cake-card.jpg"
+                    alt="Strawberry Conserve"
+                    width="400"
+                    height="400"
+                    class="shop-product-card__img w-full h-full object-cover"
+                    style="aspect-ratio: 1 / 1;"
+                >
+                    </div>
+        <div class="p-3 min-w-0">
+            <div class="font-semibold break-words">Strawberry Conserve</div>
+                            <div class="mt-1 text-sm">
+                    <span class="tabular-nums whitespace-nowrap" style="font-variant-numeric: tabular-nums">£85.00 <span style="font-variant-caps: small-caps">inc. VAT</span></span>
+                </div>
+                                </div>
+    </a>
+            <div class="shop-product-card__pill-slot" data-shop-card-pill>
+                            <form method="POST" action="/shop/cart/add" class="shop-product-card__pill" data-product-name="Strawberry Conserve">
+                    <input type="hidden" name="_token" value="__CSRF__" autocomplete="off">                    <input type="hidden" name="product_slug" value="conserve">
+                    <input type="hidden" name="variant_id" value="__VID__">
+                    <input type="hidden" name="qty" value="1">
+                    <button type="submit" class="shop-product-card__pill-btn">Add to cart</button>
+                </form>
+                    </div>
+    </div>

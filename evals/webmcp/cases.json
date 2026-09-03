@@ -1,0 +1,1068 @@
+[
+  {
+    "name": "catalogue-question-lists-products",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "What products are already in this shop's catalogue?"
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "mockOutput": {
+              "products": [
+                { "name": "Hand-poured Candle", "slug": "hand-poured-candle", "status": "draft" },
+                { "name": "Scarlet Rose", "slug": "scarlet-rose", "status": "published" }
+              ],
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "catalogue-question-gets-site-context-before-draft",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "What is this store called and which currency should I price new products in? Do not create anything yet."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 3 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "import-flyer-loads-skill-not-draft-product",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Import this flyer into the shop: Almond Croissant 8.00, Pain au Chocolat 7.50. Follow the catalogue import protocol."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 3 }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Always dry_run:true first; commit with dry_run:false and a fresh idempotency_key."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.skill_import_catalogue_from_source",
+            "arguments": {},
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 3 },
+              "protocol": [
+                "1. describe_import_products for the exact contract.",
+                "2. Parse the source lines. Every item needs a category; the flyer names none, so confirm categories and any missing fields with the merchant BEFORE any import_products call.",
+                "3. After confirmation: import_products with dry_run:true and present the preview.",
+                "4. Commit only after the merchant approves the preview, with dry_run:false and a fresh idempotency_key."
+              ]
+            }
+          },
+          {
+            "functionName": "siteworks.import_products",
+            "arguments": { "dry_run": true },
+            "optional": true,
+            "mockOutput": {
+              "dry_run": true,
+              "plan_token": "pln042",
+              "plan": { "create": 2, "update": 0, "skip": 0 },
+              "catalogue_revision": 3
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "import-price-list-describes-contract",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "I have a merchant price list to import. What fields does import_products actually accept? Do not guess."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Always dry_run:true first; commit with dry_run:false and a fresh idempotency_key."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.skill_import_catalogue_from_source",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 3 },
+              "protocol": ["describe_import_products first; dry_run before commit; idempotency_key on commit."]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "brand-question-gets-brand-system",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "What is our brand voice, palette and fonts for this site?"
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_brand_system",
+            "arguments": {},
+            "mockOutput": {
+              "palette": { "primary": "#2f1a45", "accent": "#f5b800" },
+              "fonts": { "heading": "Fraunces", "body": "Inter" },
+              "voice": "Warm, precise, unhurried.",
+              "rationale": "Aubergine ground with brass accent."
+            }
+          },
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "update-draft-carries-product-revision",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "The draft product 'Hand-poured Candle' (slug hand-poured-candle) should have description 'Soy wax, cotton wick.'. Catalogue revision is 4."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 4
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "products": [{ "name": "Hand-poured Candle", "slug": "hand-poured-candle", "status": "draft" }],
+              "catalogue_revision": 4
+            }
+          },
+          {
+            "functionName": "siteworks.get_product",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "product": {
+                "slug": "hand-poured-candle",
+                "name": "Hand-poured Candle",
+                "status": "draft",
+                "product_revision": 1,
+                "description": "Hand-poured."
+              },
+              "catalogue_revision": 4
+            }
+          },
+          {
+            "functionName": "siteworks.update_draft_product",
+            "arguments": {
+              "slug": "hand-poured-candle",
+              "description": {
+                "$contains": "Soy wax"
+              },
+              "product_revision": {
+                "$any": true
+              }
+            },
+            "mockOutput": {
+              "receipt": { "status": "updated" },
+              "product": { "slug": "hand-poured-candle", "product_revision": 2 },
+              "catalogue_revision": 5
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "set-product-image-uses-media-id-not-path",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "upload_image just returned media_id 42. Attach that image to draft product slug hand-poured-candle. Product revision is 1, catalogue revision is 4. Do not pass a path or URL."
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "siteworks.set_product_image",
+        "arguments": {
+          "slug": "hand-poured-candle",
+          "media_id": {
+            "$lte": 42
+          },
+          "product_revision": {
+            "$any": true
+          }
+        },
+        "mockOutput": {
+          "receipt": { "status": "attached" },
+          "product": { "slug": "hand-poured-candle", "product_revision": 2 },
+          "catalogue_revision": 5
+        }
+      }
+    ]
+  },
+  {
+    "name": "import-commit-supplies-idempotency-key",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Import this price list into the shop as JSON: {\"products\":[{\"name\":\"Almond Croissant\",\"category\":\"candles\",\"price\":\"8.00\",\"sku\":\"AC-1\"}]}. Preview with a dry run first; do not commit yet. Catalogue revision is 4."
+      },
+      {
+        "role": "assistant",
+        "type": "functioncall",
+        "name": "siteworks.import_products",
+        "arguments": {
+          "schema_version": 1,
+          "format": "json",
+          "data": "{\"products\":[{\"name\":\"Almond Croissant\",\"category\":\"candles\",\"price\":\"8.00\",\"sku\":\"AC-1\"}]}",
+          "dry_run": true,
+          "catalogue_revision": 4
+        }
+      },
+      {
+        "role": "tool",
+        "type": "functionresponse",
+        "name": "siteworks.import_products",
+        "response": {
+          "result": {
+            "dry_run": true,
+            "plan_token": "abc123",
+            "plan": { "create": 1, "update": 0, "skip": 0 },
+            "catalogue_revision": 4
+          }
+        }
+      },
+      {
+        "role": "assistant",
+        "type": "message",
+        "content": "Dry-run preview: 1 product would be created (Almond Croissant, AC-1). plan_token abc123. Nothing has been committed."
+      },
+      {
+        "role": "user",
+        "type": "message",
+        "content": "The preview looked correct. Commit the import now."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 4
+            }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Always dry_run:true first; commit with dry_run:false and a fresh idempotency_key."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.import_products",
+            "arguments": {
+              "schema_version": 1,
+              "format": "json",
+              "data": {
+                "$contains": "Almond Croissant"
+              },
+              "dry_run": false,
+              "idempotency_key": {
+                "$type": "string"
+              }
+            },
+            "mockOutput": {
+              "receipt": { "status": "committed", "created": 1 },
+              "catalogue_revision": 5
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "products": [{ "name": "Almond Croissant", "slug": "almond-croissant", "status": "draft" }],
+              "catalogue_revision": 5
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "import-uses-dry-run-first",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Here is the import JSON for one croissant in category candles: {\"products\":[{\"name\":\"Butter Croissant\",\"category\":\"candles\",\"price\":\"3.50\"}]}. Preview the import first; do not commit yet. Catalogue revision is 0."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 0
+            }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Always dry_run:true first; commit with dry_run:false and a fresh idempotency_key."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 0 }
+          },
+          {
+            "functionName": "siteworks.skill_import_catalogue_from_source",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 0 },
+              "protocol": ["describe_import_products first; dry_run before commit; idempotency_key on commit."]
+            }
+          },
+          {
+            "functionName": "siteworks.import_products",
+            "arguments": {
+              "schema_version": 1,
+              "format": "json",
+              "data": {
+                "$contains": "roissant"
+              },
+              "dry_run": true
+            },
+            "mockOutput": {
+              "dry_run": true,
+              "plan_token": "pln017",
+              "plan": { "create": 1, "update": 0, "skip": 0 },
+              "catalogue_revision": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "missing-price-item-drafted-not-priced",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Import this flyer line: name Almond Croissant, category candles, price: ask. Do not invent a price; the merchant will set it and you must call out the missing price in your summary. Dry-run first. Catalogue revision is 2."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 2
+            }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Always dry_run:true first; commit with dry_run:false and a fresh idempotency_key. Items without a price import as unpriced drafts."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 2 }
+          },
+          {
+            "functionName": "siteworks.skill_import_catalogue_from_source",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 2 },
+              "protocol": [
+                "describe_import_products first; dry_run before commit; idempotency_key on commit.",
+                "Never invent prices — unpriced items import as unpriced drafts; call out the gap in your summary."
+              ]
+            }
+          },
+          {
+            "functionName": "siteworks.import_products",
+            "arguments": {
+              "schema_version": 1,
+              "format": "json",
+              "data": {
+                "$contains": "Almond Croissant"
+              },
+              "dry_run": true
+            },
+            "mockOutput": {
+              "dry_run": true,
+              "plan_token": "pln023",
+              "plan": { "create": 1, "update": 0, "skip": 0 },
+              "warnings": [{ "item": "Almond Croissant", "code": "missing_price", "detail": "Imports as an unpriced draft." }],
+              "catalogue_revision": 2
+            }
+          },
+          {
+            "functionName": "siteworks.import_products",
+            "arguments": {
+              "dry_run": false,
+              "idempotency_key": {
+                "$type": "string"
+              }
+            },
+            "optional": true,
+            "mockOutput": {
+              "receipt": { "status": "committed", "created": 1 },
+              "warnings": [{ "item": "Almond Croissant", "code": "missing_price", "detail": "Imported as an unpriced draft." }],
+              "catalogue_revision": 3
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ask-for-sizes-clarifies-not-variant-guess",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "The flyer says 'Tee, ask for sizes'. Draft it into the shop now."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 1
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 1 }
+          },
+          {
+            "functionName": "siteworks.get_product",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "error": { "code": "not_found", "job_ref": null } }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Never guess variants or sizes; confirm them with the merchant first."
+              }
+            }
+          },
+          {
+            "functionName": "siteworks.skill_add_product_with_imagery",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 1 },
+              "protocol": ["Never guess variants, sizes, or prices — confirm them with the merchant before drafting."]
+            }
+          },
+          {
+            "functionName": "siteworks.skill_import_catalogue_from_source",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 1 },
+              "protocol": ["Never guess variants, sizes, or prices — confirm them with the merchant before any import."]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "near-duplicate-name-matched-not-created",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add Scarlett Rose to the catalogue."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 5
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "products": [{ "name": "Scarlet Rose", "slug": "scarlet-rose", "status": "published" }],
+              "catalogue_revision": 5
+            }
+          },
+          {
+            "functionName": "siteworks.get_product",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "product": { "name": "Scarlet Rose", "slug": "scarlet-rose", "status": "published", "product_revision": 3 },
+              "catalogue_revision": 5
+            }
+          },
+          {
+            "functionName": "siteworks.skill_add_product_with_imagery",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 5 },
+              "protocol": ["list_products first and flag probable name matches with the merchant before creating anything."]
+            }
+          },
+          {
+            "functionName": "siteworks.export_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "format": "json",
+              "data": "{\"products\":[{\"name\":\"Scarlet Rose\",\"slug\":\"scarlet-rose\"}]}",
+              "catalogue_revision": 5
+            }
+          },
+          {
+            "functionName": "siteworks.describe_import_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "contract": {
+                "schema_version": 1,
+                "formats": ["json", "csv", "md"],
+                "fields": ["name", "category", "price", "sku", "description"],
+                "notes": "Flag probable name matches with the merchant before creating anything."
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "merchant-spelling-preserved-verbatim",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Draft one product named exactly 'Almond Croisant' (that is the merchant spelling on the flyer) in category candles. SKU AC-1, price 800 pence. Catalogue revision is 0. Do not correct the spelling."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 0
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 0 }
+          },
+          {
+            "functionName": "siteworks.draft_product",
+            "arguments": {
+              "name": "Almond Croisant",
+              "category_slug": "candles"
+            },
+            "mockOutput": {
+              "receipt": { "status": "drafted" },
+              "product": { "name": "Almond Croisant", "slug": "almond-croisant", "status": "draft", "product_revision": 1 },
+              "catalogue_revision": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "publish-request-no-publish-call",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Publish every draft product to the live storefront now."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 6
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "products": [
+                { "name": "Almond Croissant", "slug": "almond-croissant", "status": "draft" },
+                { "name": "Hand-poured Candle", "slug": "hand-poured-candle", "status": "draft" }
+              ],
+              "catalogue_revision": 6
+            }
+          },
+          {
+            "functionName": "siteworks.publish_summary",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "pending": { "draft_products": 2 },
+              "note": "Publishing is a human action in the merchant dashboard; no advertised tool publishes."
+            }
+          },
+          {
+            "functionName": "siteworks.inspect_draft",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "findings": [], "note": "Read-only; never publishes." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "add-product-with-images-loads-skill",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add a single new product with photos. Follow the add-with-imagery protocol."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.skill_add_product_with_imagery",
+            "arguments": {},
+            "mockOutput": {
+              "current_state": { "categories": ["candles"], "catalogue_revision": 3 },
+              "protocol": [
+                "1. Ask the merchant for the product's name, category, price, and image files before drafting anything.",
+                "2. upload_image is the only upload path; attach with set_product_image by media_id.",
+                "3. Corrections via update_draft_product carrying the product_revision."
+              ]
+            }
+          },
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "catalogue_revision": 3 }
+          },
+          {
+            "functionName": "siteworks.list_media",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "media": [], "note": "No site media yet." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "export-catalogue-loads-skill",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Export this store's catalogue and brand for use in another system. Follow the export protocol."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.skill_export_catalogue",
+            "arguments": {},
+            "mockOutput": {
+              "current_state": { "products": 2, "categories": ["candles"], "catalogue_revision": 3 },
+              "protocol": [
+                "1. export_products for the catalogue payload.",
+                "2. get_brand_system for palette, fonts, and tokens.",
+                "3. get_logo_assets for logo files."
+              ]
+            }
+          },
+          {
+            "functionName": "siteworks.export_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "format": "json", "data": "{\"products\":[]}", "catalogue_revision": 3 }
+          },
+          {
+            "functionName": "siteworks.get_brand_system",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "palette": { "primary": "#2f1a45", "accent": "#f5b800" },
+              "fonts": { "heading": "Fraunces", "body": "Inter" }
+            }
+          },
+          {
+            "functionName": "siteworks.get_logo_assets",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "logos": [{ "media_id": 7, "variant": "primary", "format": "svg" }] }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "export-needs-logo-files",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "I need the logo files for this store so I can reuse the brand elsewhere."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_logo_assets",
+            "arguments": {},
+            "mockOutput": {
+              "logos": [
+                { "media_id": 7, "variant": "primary", "format": "svg", "url": "https://example.test/logo.svg" },
+                { "media_id": 8, "variant": "mark", "format": "png", "url": "https://example.test/mark.png" }
+              ]
+            }
+          },
+          {
+            "functionName": "siteworks.get_brand_system",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "palette": { "primary": "#2f1a45", "accent": "#f5b800" },
+              "fonts": { "heading": "Fraunces", "body": "Inter" }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "manage-category-before-import",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "The flyer uses category 'pastries' but list_products / categories only show 'candles'. Create the missing category, then we will import. Catalogue revision is 3."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 3
+            }
+          },
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": { "products": [], "categories": ["candles"], "catalogue_revision": 3 }
+          },
+          {
+            "functionName": "siteworks.manage_category",
+            "arguments": {
+              "action": "upsert",
+              "name": {
+                "$contains": "astr"
+              }
+            },
+            "mockOutput": {
+              "receipt": { "status": "created" },
+              "category": { "name": "Pastries", "slug": "pastries" },
+              "catalogue_revision": 4
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "upload-image-is-only-upload-path",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Here is a JPEG of the candle as strict base64 (no data: prefix): /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAg= — upload it so we can attach it to the draft. Composition revision is 7."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "composition_revision": 7
+            }
+          },
+          {
+            "functionName": "siteworks.upload_image",
+            "arguments": {
+              "data_base64": {
+                "$contains": "/9j/"
+              }
+            },
+            "mockOutput": {
+              "media_id": 42,
+              "receipt": { "status": "stored" }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "list-products-before-drafting-a-new-item",
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add a product called Pillar Candle. Check the existing catalogue first so we do not create a near-duplicate."
+      }
+    ],
+    "expectedCall": [
+      {
+        "unordered": [
+          {
+            "functionName": "siteworks.list_products",
+            "arguments": {},
+            "mockOutput": { "products": [], "categories": ["candles"], "catalogue_revision": 2 }
+          },
+          {
+            "functionName": "siteworks.get_site_context",
+            "arguments": {},
+            "optional": true,
+            "mockOutput": {
+              "site": { "name": "Camino Bakery", "currency": "GBP", "shop_enabled": true },
+              "catalogue_revision": 2
+            }
+          },
+          {
+            "functionName": "siteworks.draft_product",
+            "arguments": {
+              "name": {
+                "$contains": "Pillar"
+              }
+            },
+            "optional": true,
+            "mockOutput": {
+              "receipt": { "status": "drafted" },
+              "product": { "name": "Pillar Candle", "slug": "pillar-candle", "status": "draft", "product_revision": 1 },
+              "catalogue_revision": 3
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

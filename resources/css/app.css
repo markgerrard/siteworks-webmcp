@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source inline("[html.nav-closed-content_&]:hidden [html.nav-closed-shop_&]:hidden");
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Montserrat', var(--font-sans);
+
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    /* SiteWorks brand palette — see docs/design-system/.../colors_and_type.css */
+    --color-sw-deep-slate: #2F3A45;
+    --color-sw-steel-blue: #4A6F8F;
+    --color-sw-light-blue: #5FB3D9;
+    --color-sw-soft-cyan:  #8FD3E8;
+    --color-sw-dark-grey:  #1F2A33;
+
+    /* Flux's accent slot drives primary buttons, focus rings, links —
+       point it at the brand light-blue so CTAs read as SiteWorks
+       rather than generic neutral. Foreground sits on top of the
+       light-blue accent: white falls below WCAG AA (~2:1) on
+       #5FB3D9, deep-slate clears AA at ~5:1 and feels intentional
+       against the brand panels. --color-accent-content is the
+       on-surface accent (used for links/text-only callouts) — keep
+       it as the accent itself so links read as brand colour. */
+    --color-accent: var(--color-sw-light-blue);
+    --color-accent-content: var(--color-sw-light-blue);
+    --color-accent-foreground: var(--color-sw-deep-slate);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-sw-light-blue);
+        --color-accent-content: var(--color-sw-light-blue);
+        --color-accent-foreground: var(--color-sw-deep-slate);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+/* Hide Alpine x-cloak elements until hydration completes — prevents a
+   flash of expanded sidebar labels on navigation when the sidebar
+   should be in mini state. */
+[x-cloak] {
+    display: none !important;
+}
+
+/*
+  Control-panel shell: reserved left dock. Width is 0 today; a future
+  ChatGPT/WebMCP panel sets --cp-left-dock and unhides #cp-left-dock.
+*/
+html {
+    --cp-left-dock: 0px;
+    --cp-topbar: 3.5rem;
+}
+
+#cp-left-dock {
+    width: var(--cp-left-dock);
+}
+
+*:has(>[data-flux-main]) {
+    grid-template-columns: var(--cp-left-dock) min-content minmax(0, 1fr) min-content;
+    grid-template-areas:
+        "header header header header"
+        "left-dock sidebar main    aside"
+        "left-dock sidebar footer  aside";
+}
+
+*:has(>[data-flux-sidebar]+[data-flux-header]) {
+    grid-template-areas:
+        "left-dock sidebar header  header"
+        "left-dock sidebar main    aside"
+        "left-dock sidebar footer  aside";
+}
+
+*:has(>[data-cp-topbar]) [data-flux-sidebar] {
+    top: var(--cp-topbar);
+    max-height: calc(100vh - var(--cp-topbar));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-cp-assistant-panel],
+    [data-cp-assistant-backdrop] {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+#cp-left-dock {
+    grid-area: left-dock;
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+select:not([data-flux-control]) {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    padding-right: 2rem;
+}

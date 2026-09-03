@@ -1,0 +1,38 @@
+#!/bin/bash
+# Safe artisan runner — always runs as www-data inside the app container so
+# newly-created files in storage/ and bootstrap/cache/ don't end up owned
+# by root, which causes tempnam fallbacks in Blade/Livewire cache writes.
+#
+# Supervisord inside the container still runs as root (it needs to bind
+# port 80 and drop privileges into php-fpm workers), so we can't set
+# `user: www-data` on the whole service. This wrapper pins interactive
+# exec to www-data for everything a dev types by hand.
+#
+# HOME=/tmp: www-data's system home is /var/www, which is not writable by
+# www-data (repo bind-mounted in from the host with different ownership).
+# Overriding HOME gives psysh / readline / other tools a writable dir for
+# config + history, silencing the "Writing to directory /var/www/.config/
+# psysh is not allowed" notice on every `tinker` invocation.
+set -e
+
+# The `app` service only runs under COMPOSE_PROFILES=all; other compose
+# profiles run per-surface services instead, so hardcoding `app` would make
+# this wrapper fail whenever a full-profile stack isn't up. Prefer `app`
+# when present, otherwise drive artisan from agents-app — it has the full
+# app code and is up under either profile, matching bin/migrate's choice.
+SERVICE=""
+RUNNING="$(sudo docker compose ps --services --status running 2>/dev/null)"
+for s in app agents-app customer-app site-public-app editor-preview-app; do
+    if printf '%s\n' "$RUNNING" | grep -qx "$s"; then
+        SERVICE="$s"
+        break
+    fi
+done
+
+if [ -z "$SERVICE" ]; then
+    echo "Error: no running app service found (tried: app, agents-app, customer-app, site-public-app, editor-preview-app)." >&2
+    echo "Is the stack up? Try: docker compose ps" >&2
+    exit 1
+fi
+
+exec sudo docker compose exec -T -u www-data -e HOME=/tmp "$SERVICE" php artisan "$@"

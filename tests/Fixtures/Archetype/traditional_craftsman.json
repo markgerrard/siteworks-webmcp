@@ -1,0 +1,50 @@
+{
+    "name": "Thornbury Heritage Joinery",
+    "summary": "Third-generation bespoke joiners restoring and building hardwood furniture, doors, and staircases for period homes across the Cotswolds.",
+    "vibe": "heritage, hand-crafted, measured",
+    "archetype": "traditional_craftsman",
+    "products": [
+        "Bespoke kitchens",
+        "Staircase restoration",
+        "Oak door fitting",
+        "Sash window repair",
+        "Period-style cabinetry"
+    ],
+    "audience": "Owners of listed and period homes who want craftsmanship that matches the building",
+    "differentiators": [
+        "Third-generation family workshop, established 1948",
+        "Traditional hand-cut joinery — no flat-pack",
+        "Sourced British hardwood"
+    ],
+    "tone": "understated, confident, craft-led",
+    "sample_headline": "Bespoke Joinery, Hand-Cut Since 1948.",
+    "contact": {
+        "phones": ["01454 555 220"],
+        "emails": ["workshop@thornburyjoinery.co.uk"]
+    },
+    "geo": {
+        "service_area": "Cotswolds and South Gloucestershire",
+        "hq": "Thornbury",
+        "scope": "regional",
+        "suburbs": [
+            "Thornbury", "Tetbury", "Stroud", "Cirencester", "Chipping Sodbury"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "77",
+        "insurance": "£2m public liability",
+        "trade_bodies": ["British Woodworking Federation", "Heritage Crafts Association"],
+        "credentials": ["City & Guilds Cabinet Making Advanced Craft"]
+    },
+    "founded_year": 1948,
+    "reviews": {"average": 4.9, "count": 48},
+    "portfolio_images": [
+        "https://cdn.example.com/thornbury/kitchen-1.jpg",
+        "https://cdn.example.com/thornbury/staircase-1.jpg",
+        "https://cdn.example.com/thornbury/door-1.jpg",
+        "https://cdn.example.com/thornbury/cabinet-1.jpg",
+        "https://cdn.example.com/thornbury/window-1.jpg",
+        "https://cdn.example.com/thornbury/mantel-1.jpg"
+    ],
+    "palette": ["#3b2a1a", "#c9a959"]
+}

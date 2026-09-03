@@ -1,0 +1,43 @@
+{
+    "_comment": "Real rendered palettes of demo sites 51/52/54, captured 2026-08-22 from public :root (not the live DB). light-archetype is the shipped trades-bold preset defaults.",
+    "51-eden": {
+        "primary_color": "#1a1a1c",
+        "accent_color": "#c0552f",
+        "tertiary_color": "#a3b8a8",
+        "surface_color": "#f9f8f6",
+        "surface_alt_color": "#efece6",
+        "border_color": "#d1d5d0",
+        "text_color": "#1a2421",
+        "text_muted_color": "#5c6b64"
+    },
+    "52-hunt": {
+        "primary_color": "#2e4429",
+        "accent_color": "#a6763c",
+        "tertiary_color": "#8a7f63",
+        "surface_color": "#f7f3ea",
+        "surface_alt_color": "#efe7d6",
+        "border_color": "#dfd5c0",
+        "text_color": "#1f1b14",
+        "text_muted_color": "#5c5343"
+    },
+    "54-nh": {
+        "primary_color": "#26292e",
+        "accent_color": "#e8590c",
+        "tertiary_color": "#6b7280",
+        "surface_color": "#090a0c",
+        "surface_alt_color": "#0f1113",
+        "border_color": "#202428",
+        "text_color": "#e5e8eb",
+        "text_muted_color": "#969da5"
+    },
+    "light-archetype": {
+        "primary_color": "#1e40af",
+        "accent_color": "#f59e0b",
+        "tertiary_color": "#d2d9eb",
+        "surface_color": "#ffffff",
+        "surface_alt_color": "#f5f5f5",
+        "border_color": "#e5e5e5",
+        "text_color": "#111111",
+        "text_muted_color": "#6b7280"
+    }
+}

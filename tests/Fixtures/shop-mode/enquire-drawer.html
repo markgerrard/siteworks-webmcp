@@ -1,0 +1,540 @@
+<div
+    id="shop-cart-drawer-root"
+    x-data="shopCartDrawer()"
+    data-cart-url="http://byte-enquire.example/shop/cart"
+    data-add-url="http://byte-enquire.example/shop/cart/add"
+    data-checkout-url="http://byte-enquire.example/shop/checkout"
+    data-csrf="__CSRF__"
+    data-brand="Matrix Bakery"
+>
+    <div
+        x-show="open"
+        x-cloak
+        x-bind="backdropBind"
+        @click="close()"
+        class="fixed inset-0"
+        style="background-color: rgba(0, 0, 0, 0.4); z-index: 60;"
+        aria-hidden="true"
+    ></div>
+
+    <aside
+        id="shop-cart-drawer"
+        x-show="open"
+        x-cloak
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shop-cart-drawer-title"
+        @keydown.escape.window="close()"
+        @keydown.tab="trap($event)"
+        class="fixed top-0 right-0 bottom-0 flex flex-col"
+        style="width: min(560px, 100%); background-color: var(--color-surface); color: var(--color-text); z-index: 61; box-shadow: -8px 0 24px rgba(0,0,0,0.12);"
+    >
+        <div class="flex items-center justify-between gap-3 shrink-0" style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--color-border);">
+            <h2 id="shop-cart-drawer-title" class="text-xl font-semibold m-0">
+                Cart
+                <sup class="text-sm font-medium" style="color: var(--color-text-muted);" x-text="count" x-show="count > 0"></sup>
+            </h2>
+            <button
+                type="button"
+                x-ref="closeBtn"
+                @click="close()"
+                aria-label="Close cart"
+                class="inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="width: 44px; height: 44px; border-radius: 9999px; border: 1px solid var(--color-border); background-color: var(--color-surface); color: var(--color-text); outline-color: var(--color-accent);"
+            >×</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto min-h-0" style="padding: 1rem 1.25rem;">
+                        <div x-show="freeShipping" x-cloak class="mb-4">
+                <p class="text-sm m-0" x-show="freeShipping && freeShipping.progress_pct < 100">
+                    Spend <span x-text="freeShipping && freeShipping.remaining_display"></span> more to reach free shipping!
+                </p>
+                <p class="text-sm m-0" x-show="freeShipping && freeShipping.progress_pct >= 100">
+                    You’ve unlocked free shipping.
+                </p>
+                <div class="mt-2 overflow-hidden" style="height: 4px; background-color: var(--color-border); border-radius: 9999px;">
+                    <div style="height: 100%; background-color: var(--brand-accent); border-radius: 9999px;" :style="'width:' + (freeShipping ? freeShipping.progress_pct : 0) + '%'"></div>
+                </div>
+            </div>
+            
+            <p role="alert" x-cloak x-show="error" class="text-sm mb-4" x-text="error"></p>
+
+            <p x-show="items.length === 0" class="text-sm" style="color: var(--color-text-muted);">Your cart is empty.</p>
+
+            <ul class="list-none m-0 p-0">
+                <template x-for="item in items" :key="item.id">
+                    <li class="flex items-start gap-3 py-4" style="border-bottom: 1px solid var(--color-border);">
+                        <div class="shrink-0 overflow-hidden" style="width: 4.5rem; height: 4.5rem; aspect-ratio: 1 / 1; border-radius: var(--radius-card); background-color: var(--color-surface-alt);">
+                            <img x-show="item.image_url" :src="item.image_url" :alt="item.name" width="72" height="72" class="w-full h-full object-cover">
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs uppercase tracking-wide" style="color: var(--color-text-muted);" x-show="item.category" x-text="item.category"></div>
+                            <a :href="item.product_url" class="font-semibold block" x-text="item.name"></a>
+                            <div data-cart-variant-label class="text-sm" style="color: var(--color-text-muted);" x-show="item.variant_label" x-text="item.variant_label"></div>
+                            <template x-if="item.personalisation && item.personalisation.length">
+                                <ul class="mt-1 space-y-1 text-sm" style="color: var(--color-text-muted);">
+                                    <template x-for="row in item.personalisation" :key="row.slug">
+                                        <li>
+                                            <span x-text="row.label"></span>:
+                                            <template x-if="row.kind === 'image'">
+                                                <span class="inline-flex flex-wrap gap-1 align-middle">
+                                                    <template x-for="image in row.images" :key="image.path">
+                                                        <a :href="image.url" target="_blank" rel="noopener">
+                                                            <img :src="image.url" :alt="image.name" width="40" height="40" class="object-cover" style="width: 40px; height: 40px; border-radius: var(--radius-card);">
+                                                        </a>
+                                                    </template>
+                                                </span>
+                                            </template>
+                                            <template x-if="row.kind !== 'image'">
+                                                <span :title="row.title" x-text="row.display"></span>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <button
+                                type="button"
+                                class="text-sm underline mt-1"
+                                style="background: transparent; color: var(--color-text); min-height: 44px;"
+                                x-show="item.personalisation && item.personalisation.length"
+                                @click="startEdit(item)"
+                            >Edit</button>
+                            <form
+                                x-show="editingId === item.id"
+                                x-cloak
+                                class="mt-2 space-y-2"
+                                @submit.prevent="saveEdit(item, $event.target)"
+                            >
+                                <template x-for="row in item.personalisation" :key="'edit-'+row.slug">
+                                    <label class="block text-sm">
+                                        <span x-text="row.label"></span>
+                                        <template x-if="row.kind === 'textarea'">
+                                            <textarea class="mt-1 w-full" :name="'personalisation[' + row.slug + ']'" x-text="row.title"></textarea>
+                                        </template>
+                                        <template x-if="row.kind === 'image'">
+                                            <input class="mt-1 w-full" type="file" :name="'personalisation[' + row.slug + '][]'" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple>
+                                        </template>
+                                        <template x-if="row.kind !== 'textarea' && row.kind !== 'image'">
+                                            <input class="mt-1 w-full" type="text" :name="'personalisation[' + row.slug + ']'" :value="row.title">
+                                        </template>
+                                    </label>
+                                </template>
+                                <button type="submit" class="text-sm underline" style="background: transparent; min-height: 44px;">Save</button>
+                            </form>
+                            <div class="text-sm mt-1" x-text="item.price_display"></div>
+                            <div class="mt-2 flex flex-wrap items-center gap-3">
+                                <div class="inline-flex items-center" style="border: 1px solid var(--color-border); border-radius: var(--radius-button);">
+                                    <button type="button" class="focus-visible:outline focus-visible:outline-2" style="min-width: 44px; min-height: 44px; line-height: 1; background: transparent; color: var(--color-text); outline-color: var(--color-accent);" :aria-label="'Decrease quantity of ' + item.name" @click="setQty(item, item.qty - 1)">&minus;</button>
+                                    <span class="text-center text-sm tabular-nums" style="min-width: 2ch" x-text="item.qty"></span>
+                                    <button type="button" class="focus-visible:outline focus-visible:outline-2" style="min-width: 44px; min-height: 44px; line-height: 1; background: transparent; color: var(--color-text); outline-color: var(--color-accent);" :aria-label="'Increase quantity of ' + item.name" @click="setQty(item, item.qty + 1)">+</button>
+                                </div>
+                                <button type="button" class="text-sm underline focus-visible:outline focus-visible:outline-2" style="background: transparent; color: var(--color-text); outline-color: var(--color-accent); min-height: 44px;" @click="removeItem(item)">Remove</button>
+                            </div>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+
+            <div x-show="upsell.length > 0" class="mt-6">
+                <h3 class="text-sm font-bold tracking-widest uppercase m-0" style="color: var(--color-accent);">You may also like</h3>
+                <ul class="list-none m-0 p-0 mt-3">
+                    <template x-for="offer in upsell" :key="offer.slug">
+                        <li class="flex items-center gap-3 py-2">
+                            <div class="shrink-0 overflow-hidden" style="width: 3.5rem; aspect-ratio: 1 / 1; border-radius: var(--radius-card); background-color: var(--color-surface-alt);">
+                                <img x-show="offer.image_url" :src="offer.image_url" alt="" width="56" height="56" class="w-full h-full object-cover">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="font-medium text-sm" x-text="offer.name"></div>
+                                <div class="text-sm" x-text="offer.price_display"></div>
+                            </div>
+                            <button
+                                type="button"
+                                x-show="offer.add_variant_id"
+                                class="shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="min-height: 44px; padding: 0.25rem 0.75rem; border: 1px solid var(--brand-accent); color: var(--brand-accent); background: var(--color-surface); border-radius: 9999px; outline-color: var(--color-accent);"
+                                @click="addUpsell(offer)"
+                            >+ Add</button>
+                            <a
+                                x-show="! offer.add_variant_id"
+                                :href="'/products/' + offer.slug"
+                                class="shrink-0 inline-flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="min-height: 44px; padding: 0.25rem 0.75rem; border: 1px solid var(--brand-accent); color: var(--brand-accent); border-radius: 9999px; outline-color: var(--color-accent);"
+                            >Choose options</a>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+
+        <div class="shrink-0" style="padding: 1rem 1.25rem 1.25rem; background-color: var(--color-surface-alt); border-top: 1px solid var(--color-border);">
+            <div class="flex items-start justify-between gap-4 text-sm">
+                                    <p class="m-0" style="color: var(--color-text-muted);">Taxes included and shipping calculated at checkout.</p>
+                                <p class="m-0 font-semibold whitespace-nowrap">Subtotal <span x-text="subtotalDisplay"></span></p>
+            </div>
+            <a
+                :href="checkoutUrl"
+                class="mt-4 inline-flex items-center justify-center w-full font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="min-height: 44px; padding: 0.75rem 1.5rem; background-color: var(--brand-accent); color: var(--color-text-on-accent); border-radius: var(--radius-button); outline-color: var(--color-accent);"
+            >Check out</a>
+        </div>
+    </aside>
+
+    <div class="sr-only" aria-live="polite" x-text="announce"></div>
+</div>
+<script>
+const GENERIC_CART_ERROR = "Couldn't update your cart";
+
+function applyMutationResult(state, res, data) {
+    const preserved = {
+        items: state.items,
+        upsell: state.upsell,
+        count: state.count,
+        subtotalDisplay: state.subtotalDisplay,
+        freeShipping: state.freeShipping,
+    };
+
+    if (! res || ! res.ok || ! data || typeof data !== 'object' || ! Array.isArray(data.items)) {
+        const message = (data && data.error && typeof data.error.message === 'string' && data.error.message)
+            ? data.error.message
+            : GENERIC_CART_ERROR;
+
+        return {
+            ...preserved,
+            error: message,
+            message,
+            announce: message,
+        };
+    }
+
+    return {
+        items: data.items,
+        upsell: data.upsell || [],
+        count: data.count ?? 0,
+        subtotalDisplay: data.subtotal_display || '',
+        freeShipping: data.free_shipping || null,
+        error: '',
+        message: '',
+        announce: '',
+    };
+}
+
+function isVisibleFocusTarget(el) {
+    if (! el) {
+        return false;
+    }
+    if (el.offsetParent === null) {
+        return false;
+    }
+    if (typeof el.getClientRects === 'function' && el.getClientRects().length === 0) {
+        return false;
+    }
+
+    return true;
+}
+
+function chooseFocusRestoreTarget(candidates) {
+    const lastTrigger = candidates && candidates.lastTrigger;
+    if (isVisibleFocusTarget(lastTrigger)) {
+        return lastTrigger;
+    }
+
+    const headerControls = (candidates && candidates.headerControls) || [];
+    for (let i = 0; i < headerControls.length; i++) {
+        if (isVisibleFocusTarget(headerControls[i])) {
+            return headerControls[i];
+        }
+    }
+
+    const mobileToggle = candidates && candidates.mobileToggle;
+    if (isVisibleFocusTarget(mobileToggle)) {
+        return mobileToggle;
+    }
+
+    return null;
+}
+
+function shopCartDrawer() {
+    const reduceMotion = typeof window !== 'undefined'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    return {
+        open: false,
+        items: [],
+        upsell: [],
+        count: 0,
+        subtotalDisplay: '',
+        freeShipping: null,
+        error: '',
+        announce: '',
+        lastTrigger: null,
+        brand: '',
+        cartUrl: '',
+        addUrl: '',
+        checkoutUrl: '',
+        csrf: '',
+        editingId: null,
+        reduceMotion,
+        onDocClick: null,
+        onDocSubmit: null,
+        init() {
+            this.brand = this.$el.dataset.brand || '';
+            this.cartUrl = this.$el.dataset.cartUrl || '/shop/cart';
+            this.addUrl = this.$el.dataset.addUrl || '/shop/cart/add';
+            this.checkoutUrl = this.$el.dataset.checkoutUrl || '/shop/checkout';
+            this.csrf = this.$el.dataset.csrf || '';
+            this.onDocClick = (event) => this.handleDocClick(event);
+            this.onDocSubmit = (event) => this.handleDocSubmit(event);
+            document.addEventListener('click', this.onDocClick);
+            document.addEventListener('submit', this.onDocSubmit, true);
+            document.querySelectorAll('[data-shop-cart-control]').forEach((el) => {
+                el.setAttribute('aria-controls', 'shop-cart-drawer');
+                el.setAttribute('aria-haspopup', 'dialog');
+            });
+        },
+        destroy() {
+            if (this.onDocClick) {
+                document.removeEventListener('click', this.onDocClick);
+            }
+            if (this.onDocSubmit) {
+                document.removeEventListener('submit', this.onDocSubmit, true);
+            }
+            document.body.style.overflow = '';
+        },
+        get backdropBind() {
+            return this.reduceMotion ? {} : { ['x-transition.opacity.duration.200ms']: true };
+        },
+        headers() {
+            return {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': this.csrf,
+            };
+        },
+        takeMutationResult(res, data, successAnnounce) {
+            const next = applyMutationResult({
+                items: this.items,
+                upsell: this.upsell,
+                count: this.count,
+                subtotalDisplay: this.subtotalDisplay,
+                freeShipping: this.freeShipping,
+            }, res, data);
+            this.items = next.items;
+            this.upsell = next.upsell;
+            this.count = next.count;
+            this.subtotalDisplay = next.subtotalDisplay;
+            this.freeShipping = next.freeShipping;
+            this.error = next.error;
+            if (res && res.ok) {
+                if (successAnnounce) {
+                    this.announce = successAnnounce;
+                }
+                this.syncHeaderCounts();
+            } else if (next.message) {
+                this.announce = next.message;
+            }
+            return Boolean(res && res.ok);
+        },
+        syncHeaderCounts() {
+            document.querySelectorAll('[data-shop-cart-count]').forEach((el) => {
+                el.textContent = String(this.count);
+            });
+            document.querySelectorAll('[data-shop-cart-control]').forEach((el) => {
+                const noun = this.count === 1 ? 'item' : 'items';
+                const current = el.getAttribute('aria-label') || '';
+                const label = current.toLowerCase().indexOf('bag') === 0 ? 'Bag' : 'Cart';
+                el.setAttribute('aria-label', label + ', ' + this.count + ' ' + noun);
+            });
+        },
+        readBody(res) {
+            return res.json().then((data) => ({ res, data })).catch(() => ({ res, data: null }));
+        },
+        show(trigger) {
+            this.lastTrigger = trigger || this.lastTrigger;
+            if (this.open) {
+                // Already open (e.g. an upsell add): keep the user's focus where it is.
+                return;
+            }
+            this.open = true;
+            document.body.style.overflow = 'hidden';
+            this.setBackgroundInert(true);
+            this.$nextTick(() => this.$refs.closeBtn && this.$refs.closeBtn.focus());
+        },
+        close() {
+            if (! this.open) {
+                return;
+            }
+            this.open = false;
+            document.body.style.overflow = '';
+            this.setBackgroundInert(false);
+            this.$nextTick(() => this.restoreFocus());
+        },
+        // aria-modal alone does not remove the page from the accessibility tree in every
+        // AT; mark every top-level sibling of the drawer root inert while it is open.
+        setBackgroundInert(on) {
+            const root = this.$root;
+            Array.from(document.body.children).forEach((el) => {
+                if (el === root || el.contains(root)) {
+                    return;
+                }
+                if (on) {
+                    if (! el.hasAttribute('inert')) {
+                        el.setAttribute('inert', '');
+                        el.setAttribute('data-shop-drawer-inert', '');
+                    }
+                } else if (el.hasAttribute('data-shop-drawer-inert')) {
+                    el.removeAttribute('inert');
+                    el.removeAttribute('data-shop-drawer-inert');
+                }
+            });
+        },
+        restoreFocus() {
+            const target = chooseFocusRestoreTarget({
+                lastTrigger: this.lastTrigger,
+                headerControls: Array.from(document.querySelectorAll('[data-shop-cart-control]')),
+                mobileToggle: document.querySelector('button[aria-controls="mobile-nav-panel"]'),
+            });
+            if (target && target.focus) {
+                target.focus();
+                return;
+            }
+            const body = document.body;
+            body.setAttribute('tabindex', '-1');
+            body.focus();
+            body.removeAttribute('tabindex');
+        },
+        handleDocClick(event) {
+            const control = event.target && event.target.closest && event.target.closest('[data-shop-cart-control]');
+            if (! control) {
+                return;
+            }
+            // Leave modifier/secondary clicks (open in new tab/window) and anything already
+            // handled to the browser: the href fallback is the correct behaviour there.
+            if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                return;
+            }
+            event.preventDefault();
+            this.lastTrigger = control;
+            this.refresh().then(() => this.show(control));
+        },
+        handleDocSubmit(event) {
+            const form = event.target;
+            if (! form || ! form.getAttribute) {
+                return;
+            }
+            const action = form.getAttribute('action') || '';
+            if (action.indexOf('/shop/cart/add') === -1) {
+                return;
+            }
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const trigger = form.querySelector('[type="submit"]') || form;
+            const name = form.getAttribute('data-product-name') || 'item';
+            this.postAdd(new FormData(form), name, trigger, form);
+        },
+        refresh() {
+            return fetch(this.cartUrl, { headers: this.headers() })
+                .then((res) => this.readBody(res))
+                .then(({ res, data }) => this.takeMutationResult(res, data))
+                .catch(() => this.takeMutationResult(null, null));
+        },
+        postAdd(body, name, trigger, form) {
+            return fetch(this.addUrl, {
+                method: 'POST',
+                headers: this.headers(),
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => {
+                const ok = this.takeMutationResult(res, data, 'Added ' + name + ' to cart');
+                if (ok) {
+                    this.show(trigger);
+                }
+                return { ok, message: this.error };
+            }).catch(() => {
+                this.takeMutationResult(null, null);
+                return { ok: false, message: this.error };
+            }).then((outcome) => {
+                if (form && form.dispatchEvent) {
+                    form.dispatchEvent(new CustomEvent('shop-cart-add', { detail: outcome }));
+                }
+                return outcome;
+            });
+        },
+        addUpsell(offer) {
+            const body = new URLSearchParams();
+            body.set('_token', this.csrf);
+            body.set('product_slug', offer.slug);
+            body.set('variant_id', String(offer.add_variant_id));
+            body.set('qty', '1');
+            this.postAdd(body, offer.name, this.lastTrigger);
+        },
+        mutate(itemId, method, extra) {
+            const body = new URLSearchParams();
+            body.set('_token', this.csrf);
+            body.set('_method', method);
+            Object.keys(extra || {}).forEach((key) => body.set(key, extra[key]));
+            return fetch(this.cartUrl + '/' + itemId, {
+                method: 'POST',
+                headers: Object.assign({ 'Content-Type': 'application/x-www-form-urlencoded' }, this.headers()),
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => this.takeMutationResult(res, data))
+            .catch(() => this.takeMutationResult(null, null));
+        },
+        setQty(item, qty) {
+            if (qty <= 0) {
+                this.removeItem(item);
+                return;
+            }
+            this.mutate(item.id, 'PATCH', { qty: String(qty) });
+        },
+        removeItem(item) {
+            this.mutate(item.id, 'DELETE', {});
+        },
+        startEdit(item) {
+            this.editingId = this.editingId === item.id ? null : item.id;
+        },
+        saveEdit(item, form) {
+            const body = new FormData(form);
+            body.set('_token', this.csrf);
+            body.set('_method', 'PATCH');
+            return fetch(this.cartUrl + '/' + item.id + '/personalisation', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => {
+                this.takeMutationResult(res, data);
+                if (res && res.ok) {
+                    this.editingId = null;
+                }
+            }).catch(() => this.takeMutationResult(null, null));
+        },
+        trap(event) {
+            if (! this.open) {
+                return;
+            }
+            const root = document.getElementById('shop-cart-drawer');
+            if (! root) {
+                return;
+            }
+            const focusable = Array.from(root.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+                .filter((el) => isVisibleFocusTarget(el));
+            if (! focusable.length) {
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (! event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        },
+    };
+}
+</script>

@@ -1,0 +1,32 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "build:all": "vite build",
+        "build:agents": "VITE_SURFACE=agents vite build",
+        "build:customer": "VITE_SURFACE=customer vite build",
+        "build:editor-preview": "VITE_SURFACE=editor-preview vite build",
+        "build:site-public": "VITE_SURFACE=site-public vite build",
+        "dev": "vite",
+        "test:js": "vitest run"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.11",
+        "@tiptap/core": "^3.22.3",
+        "@tiptap/extension-link": "^3.22.3",
+        "@tiptap/starter-kit": "^3.22.3",
+        "autoprefixer": "^10.4.20",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^3.0.0",
+        "sortablejs": "^1.15.7",
+        "tailwindcss": "^4.0.7",
+        "vite": "^8.0.0"
+    },
+    "devDependencies": {
+        "jsdom": "^26.1.0",
+        "playwright": "^1.62.1",
+        "vitest": "^3.2.7"
+    }
+}

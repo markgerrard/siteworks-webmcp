@@ -1,0 +1,83 @@
+#!/bin/bash
+# Safe test runner — always uses the test database + runs as www-data so
+# compiled views / session artifacts / cache files don't end up root-owned
+# (which breaks Livewire/Blade tempnam writes in subsequent requests).
+#
+# Route cache is cleared first because phpunit.xml forces test-only host
+# values (APP_AGENT_DOMAIN, APP_URL) that diverge from the dev .env's
+# values. The route cache freezes domain bindings at cache time, so a
+# dev-built cache binds the agent routes to the dev host string and
+# breaks tests that assert host-aware behaviour. Clearing forces a
+# fresh, env-aware route load per test run.
+#
+# Container selection: after the surface split (9A) the legacy `app`
+# service only exists when COMPOSE_PROFILES=all. In split mode (dev's
+# default), the surface containers (agents-app etc.) are what's running.
+# Any of them can drive tests since they share one codebase + Postgres.
+# Prefer agents-app — always up in both modes and has the full app code.
+# Mirrors bin/migrate's container-selection pattern.
+set -e
+
+# Detect compose project prefix from .env (defaults to siteworks-dev).
+PROJECT_NAME="${COMPOSE_PROJECT_NAME:-$(grep -E '^COMPOSE_PROJECT_NAME=' .env 2>/dev/null | cut -d= -f2)}"
+PROJECT_NAME="${PROJECT_NAME:-siteworks-dev}"
+
+for c in "${PROJECT_NAME}-agents-app-1" "${PROJECT_NAME}-app-1"; do
+    if docker ps --format '{{.Names}}' | grep -qx "$c"; then
+        APP_CONTAINER="$c"
+        break
+    fi
+done
+
+if [ -z "${APP_CONTAINER:-}" ]; then
+    echo "Error: no running app container found. Tried: ${PROJECT_NAME}-agents-app-1, ${PROJECT_NAME}-app-1." >&2
+    echo "Run 'docker compose up -d' first." >&2
+    exit 1
+fi
+
+sudo docker exec -u www-data -e HOME=/tmp "$APP_CONTAINER" php artisan route:clear >/dev/null
+
+# Optional test-DB profile: TEST_DB=<name> loads .env.test-db.<name> (gitignored)
+# so the artisan test process can target a separate database. When unset, tests
+# run against the container's default database.
+TEST_DB_ENV_FILE=""
+case "${TEST_DB:-}" in
+    do)    TEST_DB_ENV_FILE=".env.test-db.do" ;;
+    local) TEST_DB_ENV_FILE=".env.test-db.local" ;;
+    laneb) TEST_DB_ENV_FILE=".env.test-db.laneb" ;;
+    "")    : ;;
+    *)     echo "Unknown TEST_DB profile: $TEST_DB (expected: do, local, laneb, or unset)" >&2; exit 2 ;;
+esac
+
+DB_OVERRIDES=()
+if [ -n "$TEST_DB_ENV_FILE" ] && [ -f "$TEST_DB_ENV_FILE" ]; then
+    while IFS='=' read -r key value; do
+        case "$key" in ''|\#*) continue ;; esac
+        DB_OVERRIDES+=(-e "${key}=${value}")
+    done < "$TEST_DB_ENV_FILE"
+fi
+
+# Default to Unit,Feature; run Browser explicitly.
+#
+# pestphp/pest-plugin-browser is installed (dev dep) and the Browser suite
+# runs via `./bin/test --testsuite=Browser`. It needs Playwright in the
+# container: `npm install` (playwright is a devDependency) plus a one-time
+# `npx playwright install chromium` as www-data (browsers land in
+# /tmp/.cache/ms-playwright, so a recreated container needs it again).
+#
+# The suite is excluded from the default run because its cross-origin
+# editor-preview/editor-shell tests self-skip: the plugin serves the app
+# single-origin (127.0.0.1:<random port>) and hardcodes bypassCSP, so
+# domain-bound routes (editor-preview.domain.com etc.) can't be visited
+# and CSP assertions are void. Until that's solved (upstream multi-domain
+# support or a custom serving harness), tests/Browser/EditorPreviewXssTest.php
+# — cited by docs/architecture/surface-invariants.md as enforcing the
+# invariant-2 XSS guarantee — is NOT enforced in CI or locally.
+#
+# An explicit --testsuite= on the command line always wins.
+case " $* " in
+    *" --testsuite"*) ;;
+    *) set -- --testsuite=Unit,Feature "$@" ;;
+esac
+
+exec sudo docker exec -u www-data -e HOME=/tmp -e DB_DATABASE=siteworks_test "${DB_OVERRIDES[@]}" "$APP_CONTAINER" php artisan test "$@"

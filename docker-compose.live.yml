@@ -1,0 +1,19 @@
+# Hosted-demo overlay: `docker compose -f docker-compose.yml -f docker-compose.live.yml --env-file .env.live up -d`
+# .env.live sets DEMO_PORT and the two public hostnames; everything else stays as in docker-compose.yml.
+services:
+  demo:
+    image: siteworks-webmcp-demo:live
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=${APP_URL:-https://webmcp-demo-app.siteworks.cloud}
+      - APP_PRIMARY_DOMAIN=${APP_PRIMARY_DOMAIN:-webmcp-demo-app.siteworks.cloud}
+      - APP_CUSTOMER_DOMAIN=${APP_CUSTOMER_DOMAIN:-webmcp-demo-app.siteworks.cloud}
+      - APP_AGENT_DOMAIN=${APP_AGENT_DOMAIN:-agents.invalid}
+      - APP_EDITOR_PREVIEW_DOMAIN=${APP_EDITOR_PREVIEW_DOMAIN:-preview.invalid}
+      - DEMO_SITE_HOST=${DEMO_SITE_HOST:-webmcp-demo.siteworks.cloud}
+      - DEMO_RESET_TOKEN=${DEMO_RESET_TOKEN:-}
+      - FORCE_HTTPS=true
+      # cloudflared reaches the container from the Docker gateway; trust it so
+      # X-Forwarded-Proto makes the request https and signed URLs validate.
+      - TRUSTED_INTERNAL_PROXIES=${TRUSTED_INTERNAL_PROXIES:-172.16.0.0/12,127.0.0.1}

@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="trades-bold">
+<head>
+    <meta charset="utf-8">
+    <title>Matrix Bakery — Shop</title>
+                                    <meta property="og:title" content="Matrix Bakery — Shop">
+        <meta name="twitter:title" content="Matrix Bakery — Shop">
+        <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Matrix Bakery">
+            <meta property="og:url" content="http://byte-quote.example/shop/quote">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/fonts/inter+inter.css" rel="stylesheet" />
+        <link rel="preload" as="style" href="http://byte-quote.example/build/assets/site-__HASH__.css" /><link rel="stylesheet" href="http://byte-quote.example/build/assets/site-__HASH__.css" data-navigate-track="reload" />    <script defer src="/vendor/alpine.min.js"></script>
+    <script defer src="/vendor/lucide.min.js"></script>
+    <style>
+        :root {
+            --site-header-height: 7.875rem;
+            --color-primary: #1e40af;
+            --color-primary-text: #1e40af;
+            --color-primary-text-on-alt: #1e40af;
+            --color-accent: #f59e0b;
+            --color-accent-text: #9e6506;
+            --color-accent-text-on-alt: #945f06;
+            --color-tertiary: #b15eca;
+            --color-surface: #ffffff;
+            --color-surface-alt: #f5f5f5;
+            --color-border: #e5e5e5;
+            --color-text: #111111;
+            --color-text-on-alt: #111111;
+            --color-text-muted: #6b7280;
+            --color-text-muted-on-alt: #6b7280;
+            --color-band: #091334;
+            --color-text-on-band: #ffffff;
+            --color-band-overlay: #091334;
+            --color-text-on-primary: #ffffff;
+            --color-text-on-accent: #0f172a;
+            --color-surface-contrast: #d1d6e5;
+            --color-text-on-contrast: #0f172a;
+            --color-text-muted-on-contrast: #545964;
+            --color-accent-text-on-contrast: #805305;
+
+            --font-display: "Inter", system-ui, sans-serif;
+            --font-body: "Inter", system-ui, sans-serif;
+
+            --radius-card: 12px;
+            --radius-button: 8px;
+            --section-spacing: 6rem;
+            --container-width: 1280px;
+            --heading-letter-spacing: -0.01em;
+        }
+        :root {
+            --brand-primary: var(--color-primary);
+            --brand-primary-text: var(--color-primary-text);
+            --brand-primary-text-on-alt: var(--color-primary-text-on-alt);
+            --brand-accent: var(--color-accent);
+            --brand-accent-text: var(--color-accent-text);
+            --brand-accent-text-on-alt: var(--color-accent-text-on-alt);
+            --brand-accent-text-on-contrast: var(--color-accent-text-on-contrast);
+        }
+        [x-cloak] { display: none !important; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            letter-spacing: var(--heading-letter-spacing);
+        }
+        .site-shell-container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .site-section-spacing {
+            padding-top: var(--section-spacing);
+            padding-bottom: var(--section-spacing);
+        }
+        @keyframes shop-cart-drawer-in {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        #shop-cart-drawer {
+            animation: shop-cart-drawer-in 200ms ease-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #shop-cart-drawer { animation: none; }
+        }
+    </style>
+    <style>
+        .shop-product-card__img {
+            transform: scale(1);
+            transition: transform 400ms ease-out;
+        }
+        .shop-product-card:hover .shop-product-card__img,
+        .shop-product-card:focus-within .shop-product-card__img {
+            transform: scale(1.04);
+        }
+        .shop-product-card__pill-slot {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 7.5%;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .shop-product-card__pill-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            padding: 0 1.25rem;
+            background-color: var(--brand-accent);
+            color: var(--color-text-on-accent, #ffffff);
+            border: 1px solid var(--brand-accent);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            outline-color: var(--color-accent);
+        }
+        /* The slot is a transparent overlay covering the whole image: it must never take
+           pointer events itself (clicks on the image keep navigating via the card anchor);
+           only the pill button becomes clickable when revealed. */
+        @media (hover: hover) {
+            .shop-product-card:hover .shop-product-card__pill-slot {
+                opacity: 1;
+            }
+            .shop-product-card:hover .shop-product-card__pill-btn {
+                pointer-events: auto;
+            }
+        }
+        .shop-product-card:focus-within .shop-product-card__pill-slot {
+            opacity: 1;
+        }
+        .shop-product-card:focus-within .shop-product-card__pill-btn {
+            pointer-events: auto;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .shop-product-card__img { transition: none; }
+        }
+</style>
+</head>
+<body class="antialiased" style="min-height: 100vh; display: flex; flex-direction: column;">
+    <div class="text-sm" style="background-color: var(--brand-primary); color: var(--color-text-on-primary, #ffffff);">
+    <div class="site-shell-container px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-10">
+            <div class="flex items-center gap-4">
+                                                            </div>
+                    </div>
+    </div>
+</div>
+
+
+<header x-data="{ scrolled: false, ready: false, ...shopSearch() }" data-shop-search-q="" data-shop-search-url="http://byte-quote.example/shop/search"
+        x-init="scrolled = window.scrollY > 10; $nextTick(() => ready = true)"
+        @scroll.window="scrolled = window.scrollY > 10"
+        :class="[scrolled ? 'shadow-md' : 'shadow-sm', ready ? 'transition-shadow duration-200' : '']"
+        class="border-b border-gray-200 sticky top-0 z-50"
+        style="background-color: #ffffff; ">
+    <nav class="site-shell-container px-4 sm:px-6 lg:px-8">
+        
+        
+        <div :class="{ 'h-[7.5rem] md:h-[8.75rem]': !scrolled, 'h-[6.75rem] md:h-[7.875rem]': scrolled, 'transition-all duration-200': ready }"
+             class="flex justify-between items-center h-[7.5rem] md:h-[8.75rem]">
+            
+                            <a href="/">
+                    <span class="text-2xl font-extrabold tracking-tight" style="color: var(--brand-primary-text);">
+                        Matrix Bakery
+                    </span>
+                </a>
+            
+            
+            <div class="hidden md:flex items-center space-x-8">
+                                <span x-data="{}" class="contents"><button type="button" data-shop-search-toggle aria-label="Search the shop" aria-expanded="false" aria-controls="shop-search-panel" @click.stop="toggle($event.currentTarget)" class="inline-flex items-center p-1 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--brand-primary-text);"><i data-lucide="search" class="h-4 w-4" aria-hidden="true"></i></button></span><a href="/shop/cart" data-shop-cart-control class="inline-flex items-center gap-2 text-sm font-medium transition-opacity hover:opacity-80" style="color: var(--brand-primary-text);" aria-label="Cart, 1 item"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM9 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></svg><span>Cart</span><span data-shop-cart-count class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold" style="background-color: var(--brand-accent); color: var(--color-text-on-accent);">1</span></a>            </div>
+
+            
+            
+            
+            <div class="flex items-center gap-3 md:hidden" x-data="{ mobileNav: false }">
+                                <button @click="mobileNav = !mobileNav" class="p-2 text-gray-600"
+                        x-bind:aria-label="mobileNav ? 'Close menu' : 'Open menu'"
+                        x-bind:aria-expanded="mobileNav ? 'true' : 'false'"
+                        aria-controls="mobile-nav-panel"
+                        aria-label="Open menu">
+                    <svg x-show="!mobileNav" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileNav" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+
+                
+                <div id="mobile-nav-panel"
+                     x-show="mobileNav" x-cloak
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2"
+                     @click.away="mobileNav = false"
+                     class="absolute top-full left-0 right-0 shadow-lg border-t border-gray-100 z-50"
+                     style="background-color: #ffffff;">
+                    <div class="site-shell-container px-4 py-4 space-y-1">
+                        <button type="button" data-shop-search-toggle aria-label="Search the shop" aria-expanded="false" aria-controls="shop-search-panel" @click.stop="mobileNav = false; toggle($event.currentTarget)" class="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium" style="color: var(--brand-primary-text);"><i data-lucide="search" class="h-4 w-4" aria-hidden="true"></i></button><a href="/shop/cart" data-shop-cart-control @click="mobileNav = false" class="flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium" style="color: var(--brand-primary-text);"><span class="inline-flex items-center gap-2"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM9 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></svg>Cart</span><span data-shop-cart-count class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold" style="background-color: var(--brand-accent); color: var(--color-text-on-accent);">1</span></a>                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+<style>
+    /* Result / popular cards: even padding all round (negative margin keeps the grid gutters),
+       rounded like the photo, soft tint on hover and on the keyboard-highlighted card. */
+    .shop-search-card { padding: .5rem; margin: -.5rem; border-radius: var(--radius-card); transition: background-color 120ms ease; }
+    .shop-search-card:hover, .shop-search-card[data-highlighted="true"] { background-color: var(--color-surface-alt); }
+    @media (prefers-reduced-motion: reduce) { .shop-search-card { transition: none; } }
+</style>
+<div id="shop-search-panel"
+     x-data="{}"
+     x-show="open"
+     x-cloak
+     x-bind="panelBind"
+     @keydown.escape.window="close()"
+     @click.outside="close()"
+     class="w-full border-t max-md:overflow-y-auto max-md:h-[calc(100dvh-var(--overlay-header-h,4.5rem))]"
+     style="background-color: var(--color-surface); border-color: var(--color-border);">
+    <div class="site-shell-container px-4 sm:px-6 lg:px-8 py-4">
+        <form method="GET" action="http://byte-quote.example/shop/search" role="search" class="flex flex-wrap items-end gap-3 max-w-full" @keydown.arrow-down.prevent="move(1)" @keydown.arrow-up.prevent="move(-1)" @keydown.enter.prevent="followOrSubmit($event)">
+            <input
+                type="search"
+                name="q"
+                x-ref="q"
+                x-model.debounce.250ms="q"
+                value=""
+                placeholder="Search the shop"
+                aria-label="Search the shop"
+                autocomplete="off"
+                class="min-w-0 flex-1 max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+            >
+            <button
+                type="submit"
+                class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="min-height: 44px; min-width: 44px; padding: 0.5rem 1.25rem; background-color: var(--color-primary); color: var(--color-text-on-primary); border-radius: var(--radius-button); outline-color: var(--color-accent);"
+            >Search</button>
+            <button type="button" @click="close()" aria-label="Close search"
+                    class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style="min-height: 44px; min-width: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); outline-color: var(--color-accent);">✕</button>
+        </form>
+
+        <div class="mt-4" x-show="q.trim().length < 2">
+            <nav aria-label="Browse by category" class="flex flex-wrap gap-2">
+            <a href="/collections/cakes"
+                      class="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+           style="border: 1px solid var(--color-border); color: var(--color-text); background-color: var(--color-surface); outline-color: var(--color-accent);">Cakes</a>
+    </nav>
+
+                            <h2 class="mt-6 text-sm font-bold tracking-widest uppercase" style="color: var(--color-accent);">Popular</h2>
+                <ul class="mt-3 list-none m-0 p-0" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+                                            <li>
+                            <a href="/products/conserve" class="shop-search-card block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" style="outline-color: var(--color-accent);">
+                                <span class="block w-full overflow-hidden" style="aspect-ratio: 1 / 1; background-color: var(--color-surface-alt); border-radius: var(--radius-card);">
+                                                                            <img src="/cake-thumb.jpg" alt="" width="300" height="300" style="width: 100%; height: 100%; object-fit: cover;">
+                                                                    </span>
+                                <span class="block min-w-0 mt-2">
+                                    <span class="block font-medium text-sm leading-snug">Strawberry Conserve</span>
+                                                                            <span class="tabular-nums whitespace-nowrap" style="font-variant-numeric: tabular-nums">£85.00 <span style="font-variant-caps: small-caps">inc. VAT</span></span>
+                                                                    </span>
+                            </a>
+                        </li>
+                                    </ul>
+                    </div>
+
+        <div class="mt-4" x-show="q.trim().length >= 2" x-cloak>
+            <h2 class="text-sm font-bold tracking-widest uppercase" style="color: var(--color-accent);">Items</h2>
+            
+            <div x-show="results.length > 0">
+            <ul class="mt-3 list-none m-0 p-0" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+                <template x-for="(item, index) in results" :key="item.slug">
+                    <li>
+                        <a :href="item.url"
+                           :aria-current="highlighted === index ? 'true' : null"
+                           @mouseenter="highlighted = index"
+                           @mouseleave="highlighted = -1"
+                           class="shop-search-card block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                           style="outline-color: var(--color-accent);"
+                           :data-highlighted="highlighted === index ? 'true' : null">
+                            <span class="block w-full overflow-hidden" style="aspect-ratio: 1 / 1; background-color: var(--color-surface-alt); border-radius: var(--radius-card);">
+                                <img x-show="item.image_url" :src="item.image_url" alt="" width="300" height="300" style="width: 100%; height: 100%; object-fit: cover;">
+                            </span>
+                            <span class="block min-w-0 mt-2">
+                                <span class="block font-medium text-sm leading-snug" x-text="item.name"></span>
+                                <span class="tabular-nums whitespace-nowrap" style="font-variant-numeric: tabular-nums">
+                                    <span x-text="item.price_display"></span> <span style="font-variant-caps: small-caps">inc. VAT</span>                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </template>
+            </ul>
+            </div>
+            <a x-show="count > 0" :href="seeAllUrl" class="mt-3 inline-flex items-center text-sm font-semibold" style="color: var(--color-accent);" x-text="'See all ' + count + ' results →'"></a>
+            <p x-show="count === 0" class="mt-3 text-sm" style="color: var(--color-text-muted);">
+                Nothing called ‘<span x-text="q"></span>’ yet — try a flavour, or browse Cakes.
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+function shopSearch() {
+    const reduceMotion = typeof window !== 'undefined'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    return {
+        open: false,
+        q: '',
+        results: [],
+        count: 0,
+        seeAllUrl: '',
+        highlighted: -1,
+        lastToggle: null,
+        abort: null,
+        reduceMotion,
+        searchUrl: '',
+        init() {
+            this.q = this.$el.dataset.shopSearchQ || '';
+            this.searchUrl = this.$el.dataset.shopSearchUrl || '';
+            this.$watch('q', (value) => this.onQuery(value));
+        },
+        get panelBind() {
+            return this.reduceMotion ? {} : { ['x-transition.opacity.duration.200ms']: true };
+        },
+        toggle(el) {
+            if (this.open) {
+                this.close();
+                return;
+            }
+            this.lastToggle = el || this.lastToggle;
+            this.open = true;
+            document.querySelectorAll('[data-shop-search-toggle]').forEach((btn) => {
+                btn.setAttribute('aria-expanded', 'true');
+            });
+            if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                document.body.style.overflow = 'hidden';
+            }
+            this.$nextTick(() => this.$refs.q && this.$refs.q.focus());
+        },
+        close() {
+            this.open = false;
+            document.querySelectorAll('[data-shop-search-toggle]').forEach((btn) => {
+                btn.setAttribute('aria-expanded', 'false');
+            });
+            document.body.style.overflow = '';
+            this.$nextTick(() => this.lastToggle && this.lastToggle.focus());
+        },
+        onQuery(value) {
+            const q = (value || '').trim();
+            if (q.length < 2) {
+                this.results = [];
+                this.count = 0;
+                this.seeAllUrl = '';
+                this.highlighted = -1;
+                if (this.abort) {
+                    this.abort.abort();
+                    this.abort = null;
+                }
+                return;
+            }
+            this.fetchResults(q);
+        },
+        fetchResults(q) {
+            if (this.abort) {
+                this.abort.abort();
+            }
+            this.abort = new AbortController();
+            const joiner = this.searchUrl.indexOf('?') === -1 ? '?' : '&';
+            const url = this.searchUrl + joiner + 'q=' + encodeURIComponent(q);
+            const requested = q;
+            fetch(url, {
+                headers: { Accept: 'application/json' },
+                signal: this.abort.signal,
+            }).then((res) => res.json()).then((data) => {
+                if ((this.q || '').trim() !== requested) {
+                    return;
+                }
+                this.results = (data.results || []).slice(0, 5);
+                this.count = data.count ?? this.results.length;
+                this.seeAllUrl = data.see_all_url || (this.searchUrl + joiner + 'q=' + encodeURIComponent(requested));
+                this.highlighted = -1; // nothing pre-selected: hover or arrow keys pick a card; Enter submits the form
+            }).catch((err) => {
+                if (err && err.name === 'AbortError') {
+                    return;
+                }
+            });
+        },
+        move(delta) {
+            if (! this.results.length) {
+                return;
+            }
+            if (this.highlighted < 0) {
+                this.highlighted = delta > 0 ? 0 : this.results.length - 1;
+                return;
+            }
+            const next = this.highlighted + delta;
+            this.highlighted = ((next % this.results.length) + this.results.length) % this.results.length;
+        },
+        followOrSubmit(event) {
+            if (this.highlighted >= 0 && this.results[this.highlighted]) {
+                window.location.href = this.results[this.highlighted].url;
+                return;
+            }
+            const form = event.target.closest('form');
+            if (form) {
+                form.submit();
+            }
+        },
+    };
+}
+</script>
+</header>
+
+    <main class="site-shell-container" style="flex: 1 0 auto;">
+                <div class="px-4 sm:px-6 lg:px-8 py-6 max-w-full">
+        <nav aria-label="Breadcrumb" class="text-sm">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 list-none m-0 p-0">
+                                <li
+                                class="flex items-center after:ms-2 after:content-['›'] after:[color:var(--color-text-muted)] last:after:content-none"
+            >
+                                    <a href="/" class="break-words" style="color: var(--color-text-muted)">Home</a>
+                            </li>
+                                <li
+                                class="flex items-center after:ms-2 after:content-['›'] after:[color:var(--color-text-muted)] last:after:content-none"
+            >
+                                    <a href="http://byte-quote.example/shop" class="break-words" style="color: var(--color-text-muted)">Shop</a>
+                            </li>
+                                <li
+                                class="flex items-center after:ms-2 after:content-['›'] after:[color:var(--color-text-muted)] last:after:content-none"
+            >
+                                    <a href="http://byte-quote.example/shop/cart" class="break-words" style="color: var(--color-text-muted)">Cart</a>
+                            </li>
+                                <li
+                 aria-current="page"                 class="flex items-center after:ms-2 after:content-['›'] after:[color:var(--color-text-muted)] last:after:content-none"
+            >
+                                    <span class="break-words" style="color: var(--color-text)">Request a quote</span>
+                            </li>
+            </ol>
+</nav>
+        <h1 class="text-2xl font-bold mb-2">Request a quote</h1>
+        <p class="mb-6" style="color: var(--color-text-muted)">Tell us who it's for and when you need it — we'll come back with a price and availability.</p>
+
+        <details class="mb-6 rounded p-4 md:hidden" style="border: 1px solid var(--color-border);">
+            <summary class="cursor-pointer font-medium">Your list · £85.00 inc. VAT</summary>
+            <div class="mt-3" data-testid="quote-summary-sm">
+                <div class="flex justify-between gap-4 items-start">
+    <h2 class="font-semibold">Your list</h2>
+            <a
+            href="/shop/cart"
+            class="inline-block text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style="color: var(--color-text); text-decoration: underline; text-underline-offset: 0.2em; outline-color: var(--color-accent);"
+        >Edit list →</a>
+    </div>
+
+<ul class="divide-y max-w-full" style="border-color: var(--color-border);">
+                    <li class="py-4 flex flex-wrap gap-4 items-start max-w-full">
+            <div
+                class="shrink-0 overflow-hidden"
+                style="width: 64px; height: 64px; border-radius: var(--radius-card); background-color: var(--color-surface-alt);"
+            >
+                            </div>
+            <div class="min-w-0 flex-1">
+                <div class="font-semibold">Strawberry Conserve</div>
+                                <div class="text-sm" style="color: var(--color-text-muted)">× 1</div>
+                            </div>
+            <div class="tabular-nums shrink-0">£85.00 inc. VAT</div>
+        </li>
+    </ul>
+
+<div class="mt-2 flex justify-between gap-4 pt-2 font-semibold text-lg" data-testid="quote-guide-total" style="border-top: 1px solid var(--color-border);">
+    <span>Guide total</span>
+    <span>£85.00 inc. VAT</span>
+</div>
+<p class="mt-2 text-sm" style="color: var(--color-text-muted);">Prices are a guide until we confirm.</p>
+
+<div class="mt-4 flex items-center gap-2 text-sm" style="color: var(--color-text-muted)">
+    <i data-lucide="lock" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+    <span>No payment is taken now.</span>
+</div>
+            </div>
+        </details>
+        <details class="mb-6 rounded p-4 hidden md:block lg:hidden" open style="border: 1px solid var(--color-border);">
+            <summary class="cursor-pointer font-medium">Your list · £85.00 inc. VAT</summary>
+            <div class="mt-3" data-testid="quote-summary-md">
+                <div class="flex justify-between gap-4 items-start">
+    <h2 class="font-semibold">Your list</h2>
+            <a
+            href="/shop/cart"
+            class="inline-block text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style="color: var(--color-text); text-decoration: underline; text-underline-offset: 0.2em; outline-color: var(--color-accent);"
+        >Edit list →</a>
+    </div>
+
+<ul class="divide-y max-w-full" style="border-color: var(--color-border);">
+                    <li class="py-4 flex flex-wrap gap-4 items-start max-w-full">
+            <div
+                class="shrink-0 overflow-hidden"
+                style="width: 64px; height: 64px; border-radius: var(--radius-card); background-color: var(--color-surface-alt);"
+            >
+                            </div>
+            <div class="min-w-0 flex-1">
+                <div class="font-semibold">Strawberry Conserve</div>
+                                <div class="text-sm" style="color: var(--color-text-muted)">× 1</div>
+                            </div>
+            <div class="tabular-nums shrink-0">£85.00 inc. VAT</div>
+        </li>
+    </ul>
+
+<div class="mt-2 flex justify-between gap-4 pt-2 font-semibold text-lg" data-testid="quote-guide-total" style="border-top: 1px solid var(--color-border);">
+    <span>Guide total</span>
+    <span>£85.00 inc. VAT</span>
+</div>
+<p class="mt-2 text-sm" style="color: var(--color-text-muted);">Prices are a guide until we confirm.</p>
+
+<div class="mt-4 flex items-center gap-2 text-sm" style="color: var(--color-text-muted)">
+    <i data-lucide="lock" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+    <span>No payment is taken now.</span>
+</div>
+            </div>
+        </details>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div class="min-w-0">
+                
+                <h2 class="font-semibold mb-4">Your details</h2>
+
+                <form method="POST" action="http://byte-quote.example/shop/quote" class="space-y-3 w-full">
+                    <input type="hidden" name="_token" value="__CSRF__" autocomplete="off">                    <input type="hidden" name="quote_token" value="__QUOTE_TOKEN__">
+                    <input type="text" name="__HONEYPOT__" tabindex="-1" autocomplete="off"
+                           style="position: absolute; left: -9999px;" aria-hidden="true">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="block">
+                            <span class="text-sm font-medium">Name <span aria-hidden="true">*</span></span>
+                            <input
+                                type="text"
+                                name="name"
+                                required
+                                maxlength="120"
+                                autocomplete="name"
+                                value=""
+                                class="mt-1 w-full max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+                            >
+                                                    </label>
+                        <label class="block">
+                            <span class="text-sm font-medium">Email <span aria-hidden="true">*</span></span>
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                maxlength="255"
+                                autocomplete="email"
+                                inputmode="email"
+                                value=""
+                                class="mt-1 w-full max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+                            >
+                                                    </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="block">
+                            <span class="text-sm font-medium">Phone</span>
+                            <input
+                                type="tel"
+                                name="phone"
+                                maxlength="64"
+                                autocomplete="tel"
+                                value=""
+                                class="mt-1 w-full max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+                            >
+                                                    </label>
+                        <label class="block">
+                            <span class="text-sm font-medium">When do you need it?</span>
+                            <input
+                                type="date"
+                                name="needed_by"
+                                min="2026-09-01"
+                                value=""
+                                class="mt-1 w-full max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+                            >
+                                                    </label>
+                    </div>
+
+                    
+                    <label class="block" x-data="{ count: 0 }">
+                        <span class="text-sm font-medium">Message</span>
+                        <textarea
+                            name="message"
+                            rows="4"
+                            maxlength="1000"
+                            x-on:input="count = $event.target.value.length"
+                            class="mt-1 w-full max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                            style="width: 100%; min-height: 44px; padding: 0.5rem 0.75rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-button); background-color: var(--color-surface); outline-color: var(--color-accent);"
+                        ></textarea>
+                        <p class="mt-1 text-sm tabular-nums" data-testid="quote-message-count" style="color: var(--color-text-muted)"><span x-text="count">0</span>/1000</p>
+                                            </label>
+
+                    <button
+                        type="submit"
+                        class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                        style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 1.5rem; background-color: var(--color-primary); color: var(--color-text-on-primary); border-radius: var(--radius-button); outline-color: var(--color-accent);"
+                    >Request a quote</button>
+                    <p class="text-sm" style="color: var(--color-text-muted);">We reply within one business day.</p>
+                </form>
+            </div>
+
+            <aside class="hidden lg:block lg:sticky lg:top-6" aria-label="Your list" style="top: calc(var(--site-header-height, 4rem) + 1.5rem);">
+                <div class="rounded p-4" data-testid="quote-summary" style="border: 1px solid var(--color-border);">
+                    <div class="flex justify-between gap-4 items-start">
+    <h2 class="font-semibold">Your list</h2>
+            <a
+            href="/shop/cart"
+            class="inline-block text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style="color: var(--color-text); text-decoration: underline; text-underline-offset: 0.2em; outline-color: var(--color-accent);"
+        >Edit list →</a>
+    </div>
+
+<ul class="divide-y max-w-full" style="border-color: var(--color-border);">
+                    <li class="py-4 flex flex-wrap gap-4 items-start max-w-full">
+            <div
+                class="shrink-0 overflow-hidden"
+                style="width: 64px; height: 64px; border-radius: var(--radius-card); background-color: var(--color-surface-alt);"
+            >
+                            </div>
+            <div class="min-w-0 flex-1">
+                <div class="font-semibold">Strawberry Conserve</div>
+                                <div class="text-sm" style="color: var(--color-text-muted)">× 1</div>
+                            </div>
+            <div class="tabular-nums shrink-0">£85.00 inc. VAT</div>
+        </li>
+    </ul>
+
+<div class="mt-2 flex justify-between gap-4 pt-2 font-semibold text-lg" data-testid="quote-guide-total" style="border-top: 1px solid var(--color-border);">
+    <span>Guide total</span>
+    <span>£85.00 inc. VAT</span>
+</div>
+<p class="mt-2 text-sm" style="color: var(--color-text-muted);">Prices are a guide until we confirm.</p>
+
+<div class="mt-4 flex items-center gap-2 text-sm" style="color: var(--color-text-muted)">
+    <i data-lucide="lock" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+    <span>No payment is taken now.</span>
+</div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    </main>
+
+    <footer style="background-color: var(--color-band);
+               background-image: linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, transparent 120px);
+               color: var(--color-text-on-band);               box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.10);">
+    <div class="site-shell-container px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            
+            <div>
+                <h3 class="text-lg font-bold mb-3" style="color: var(--color-text-on-band);">Matrix Bakery</h3>
+                                                            </div>
+
+            
+            <div>
+                <h3 class="text-lg font-bold mb-3" style="color: var(--color-text-on-band);">Get In Touch</h3>
+                <div class="space-y-3">
+                                                                            </div>
+            </div>
+
+            
+            <div class="md:col-span-2">
+                <h3 class="text-lg font-bold mb-3" style="color: var(--color-text-on-band);">Quick Links</h3>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-2">
+                                                        </div>
+            </div>        </div>
+
+        <div class="mt-10 border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm opacity-70" style="border-color: rgb(255 255 255 / 0.15);">
+            <p>&copy; 2026 Matrix Bakery. All rights reserved.</p>
+                            <p class="text-xs opacity-80">Site by Laravel</p>
+                    </div>
+    </div>
+</footer>
+
+            <div
+    id="shop-cart-drawer-root"
+    x-data="shopCartDrawer()"
+    data-cart-url="http://byte-quote.example/shop/cart"
+    data-add-url="http://byte-quote.example/shop/cart/add"
+    data-checkout-url="http://byte-quote.example/shop/quote"
+    data-csrf="__CSRF__"
+    data-brand="Matrix Bakery"
+>
+    <div
+        x-show="open"
+        x-cloak
+        x-bind="backdropBind"
+        @click="close()"
+        class="fixed inset-0"
+        style="background-color: rgba(0, 0, 0, 0.4); z-index: 60;"
+        aria-hidden="true"
+    ></div>
+
+    <aside
+        id="shop-cart-drawer"
+        x-show="open"
+        x-cloak
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shop-cart-drawer-title"
+        @keydown.escape.window="close()"
+        @keydown.tab="trap($event)"
+        class="fixed top-0 right-0 bottom-0 flex flex-col"
+        style="width: min(560px, 100%); background-color: var(--color-surface); color: var(--color-text); z-index: 61; box-shadow: -8px 0 24px rgba(0,0,0,0.12);"
+    >
+        <div class="flex items-center justify-between gap-3 shrink-0" style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--color-border);">
+            <h2 id="shop-cart-drawer-title" class="text-xl font-semibold m-0">
+                Cart
+                <sup class="text-sm font-medium" style="color: var(--color-text-muted);" x-text="count" x-show="count > 0"></sup>
+            </h2>
+            <button
+                type="button"
+                x-ref="closeBtn"
+                @click="close()"
+                aria-label="Close cart"
+                class="inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="width: 44px; height: 44px; border-radius: 9999px; border: 1px solid var(--color-border); background-color: var(--color-surface); color: var(--color-text); outline-color: var(--color-accent);"
+            >×</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto min-h-0" style="padding: 1rem 1.25rem;">
+            
+            <p role="alert" x-cloak x-show="error" class="text-sm mb-4" x-text="error"></p>
+
+            <p x-show="items.length === 0" class="text-sm" style="color: var(--color-text-muted);">Your cart is empty.</p>
+
+            <ul class="list-none m-0 p-0">
+                <template x-for="item in items" :key="item.id">
+                    <li class="flex items-start gap-3 py-4" style="border-bottom: 1px solid var(--color-border);">
+                        <div class="shrink-0 overflow-hidden" style="width: 4.5rem; height: 4.5rem; aspect-ratio: 1 / 1; border-radius: var(--radius-card); background-color: var(--color-surface-alt);">
+                            <img x-show="item.image_url" :src="item.image_url" :alt="item.name" width="72" height="72" class="w-full h-full object-cover">
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs uppercase tracking-wide" style="color: var(--color-text-muted);" x-show="item.category" x-text="item.category"></div>
+                            <a :href="item.product_url" class="font-semibold block" x-text="item.name"></a>
+                            <div data-cart-variant-label class="text-sm" style="color: var(--color-text-muted);" x-show="item.variant_label" x-text="item.variant_label"></div>
+                            <template x-if="item.personalisation && item.personalisation.length">
+                                <ul class="mt-1 space-y-1 text-sm" style="color: var(--color-text-muted);">
+                                    <template x-for="row in item.personalisation" :key="row.slug">
+                                        <li>
+                                            <span x-text="row.label"></span>:
+                                            <template x-if="row.kind === 'image'">
+                                                <span class="inline-flex flex-wrap gap-1 align-middle">
+                                                    <template x-for="image in row.images" :key="image.path">
+                                                        <a :href="image.url" target="_blank" rel="noopener">
+                                                            <img :src="image.url" :alt="image.name" width="40" height="40" class="object-cover" style="width: 40px; height: 40px; border-radius: var(--radius-card);">
+                                                        </a>
+                                                    </template>
+                                                </span>
+                                            </template>
+                                            <template x-if="row.kind !== 'image'">
+                                                <span :title="row.title" x-text="row.display"></span>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <button
+                                type="button"
+                                class="text-sm underline mt-1"
+                                style="background: transparent; color: var(--color-text); min-height: 44px;"
+                                x-show="item.personalisation && item.personalisation.length"
+                                @click="startEdit(item)"
+                            >Edit</button>
+                            <form
+                                x-show="editingId === item.id"
+                                x-cloak
+                                class="mt-2 space-y-2"
+                                @submit.prevent="saveEdit(item, $event.target)"
+                            >
+                                <template x-for="row in item.personalisation" :key="'edit-'+row.slug">
+                                    <label class="block text-sm">
+                                        <span x-text="row.label"></span>
+                                        <template x-if="row.kind === 'textarea'">
+                                            <textarea class="mt-1 w-full" :name="'personalisation[' + row.slug + ']'" x-text="row.title"></textarea>
+                                        </template>
+                                        <template x-if="row.kind === 'image'">
+                                            <input class="mt-1 w-full" type="file" :name="'personalisation[' + row.slug + '][]'" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple>
+                                        </template>
+                                        <template x-if="row.kind !== 'textarea' && row.kind !== 'image'">
+                                            <input class="mt-1 w-full" type="text" :name="'personalisation[' + row.slug + ']'" :value="row.title">
+                                        </template>
+                                    </label>
+                                </template>
+                                <button type="submit" class="text-sm underline" style="background: transparent; min-height: 44px;">Save</button>
+                            </form>
+                            <div class="text-sm mt-1" x-text="item.price_display"></div>
+                            <div class="mt-2 flex flex-wrap items-center gap-3">
+                                <div class="inline-flex items-center" style="border: 1px solid var(--color-border); border-radius: var(--radius-button);">
+                                    <button type="button" class="focus-visible:outline focus-visible:outline-2" style="min-width: 44px; min-height: 44px; line-height: 1; background: transparent; color: var(--color-text); outline-color: var(--color-accent);" :aria-label="'Decrease quantity of ' + item.name" @click="setQty(item, item.qty - 1)">&minus;</button>
+                                    <span class="text-center text-sm tabular-nums" style="min-width: 2ch" x-text="item.qty"></span>
+                                    <button type="button" class="focus-visible:outline focus-visible:outline-2" style="min-width: 44px; min-height: 44px; line-height: 1; background: transparent; color: var(--color-text); outline-color: var(--color-accent);" :aria-label="'Increase quantity of ' + item.name" @click="setQty(item, item.qty + 1)">+</button>
+                                </div>
+                                <button type="button" class="text-sm underline focus-visible:outline focus-visible:outline-2" style="background: transparent; color: var(--color-text); outline-color: var(--color-accent); min-height: 44px;" @click="removeItem(item)">Remove</button>
+                            </div>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+
+            <div x-show="upsell.length > 0" class="mt-6">
+                <h3 class="text-sm font-bold tracking-widest uppercase m-0" style="color: var(--color-accent);">You may also like</h3>
+                <ul class="list-none m-0 p-0 mt-3">
+                    <template x-for="offer in upsell" :key="offer.slug">
+                        <li class="flex items-center gap-3 py-2">
+                            <div class="shrink-0 overflow-hidden" style="width: 3.5rem; aspect-ratio: 1 / 1; border-radius: var(--radius-card); background-color: var(--color-surface-alt);">
+                                <img x-show="offer.image_url" :src="offer.image_url" alt="" width="56" height="56" class="w-full h-full object-cover">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="font-medium text-sm" x-text="offer.name"></div>
+                                <div class="text-sm" x-text="offer.price_display"></div>
+                            </div>
+                            <button
+                                type="button"
+                                x-show="offer.add_variant_id"
+                                class="shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="min-height: 44px; padding: 0.25rem 0.75rem; border: 1px solid var(--brand-accent); color: var(--brand-accent); background: var(--color-surface); border-radius: 9999px; outline-color: var(--color-accent);"
+                                @click="addUpsell(offer)"
+                            >+ Add</button>
+                            <a
+                                x-show="! offer.add_variant_id"
+                                :href="'/products/' + offer.slug"
+                                class="shrink-0 inline-flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style="min-height: 44px; padding: 0.25rem 0.75rem; border: 1px solid var(--brand-accent); color: var(--brand-accent); border-radius: 9999px; outline-color: var(--color-accent);"
+                            >Choose options</a>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+
+        <div class="shrink-0" style="padding: 1rem 1.25rem 1.25rem; background-color: var(--color-surface-alt); border-top: 1px solid var(--color-border);">
+            <div class="flex items-start justify-between gap-4 text-sm">
+                                    <p class="m-0" style="color: var(--color-text-muted);">We'll come back to you with a price and availability.</p>
+                                <p class="m-0 font-semibold whitespace-nowrap">Subtotal <span x-text="subtotalDisplay"></span></p>
+            </div>
+            <a
+                :href="checkoutUrl"
+                class="mt-4 inline-flex items-center justify-center w-full font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style="min-height: 44px; padding: 0.75rem 1.5rem; background-color: var(--brand-accent); color: var(--color-text-on-accent); border-radius: var(--radius-button); outline-color: var(--color-accent);"
+            >Request a quote</a>
+        </div>
+    </aside>
+
+    <div class="sr-only" aria-live="polite" x-text="announce"></div>
+</div>
+<script>
+const GENERIC_CART_ERROR = "Couldn't update your cart";
+
+function applyMutationResult(state, res, data) {
+    const preserved = {
+        items: state.items,
+        upsell: state.upsell,
+        count: state.count,
+        subtotalDisplay: state.subtotalDisplay,
+        freeShipping: state.freeShipping,
+    };
+
+    if (! res || ! res.ok || ! data || typeof data !== 'object' || ! Array.isArray(data.items)) {
+        const message = (data && data.error && typeof data.error.message === 'string' && data.error.message)
+            ? data.error.message
+            : GENERIC_CART_ERROR;
+
+        return {
+            ...preserved,
+            error: message,
+            message,
+            announce: message,
+        };
+    }
+
+    return {
+        items: data.items,
+        upsell: data.upsell || [],
+        count: data.count ?? 0,
+        subtotalDisplay: data.subtotal_display || '',
+        freeShipping: data.free_shipping || null,
+        error: '',
+        message: '',
+        announce: '',
+    };
+}
+
+function isVisibleFocusTarget(el) {
+    if (! el) {
+        return false;
+    }
+    if (el.offsetParent === null) {
+        return false;
+    }
+    if (typeof el.getClientRects === 'function' && el.getClientRects().length === 0) {
+        return false;
+    }
+
+    return true;
+}
+
+function chooseFocusRestoreTarget(candidates) {
+    const lastTrigger = candidates && candidates.lastTrigger;
+    if (isVisibleFocusTarget(lastTrigger)) {
+        return lastTrigger;
+    }
+
+    const headerControls = (candidates && candidates.headerControls) || [];
+    for (let i = 0; i < headerControls.length; i++) {
+        if (isVisibleFocusTarget(headerControls[i])) {
+            return headerControls[i];
+        }
+    }
+
+    const mobileToggle = candidates && candidates.mobileToggle;
+    if (isVisibleFocusTarget(mobileToggle)) {
+        return mobileToggle;
+    }
+
+    return null;
+}
+
+function shopCartDrawer() {
+    const reduceMotion = typeof window !== 'undefined'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    return {
+        open: false,
+        items: [],
+        upsell: [],
+        count: 0,
+        subtotalDisplay: '',
+        freeShipping: null,
+        error: '',
+        announce: '',
+        lastTrigger: null,
+        brand: '',
+        cartUrl: '',
+        addUrl: '',
+        checkoutUrl: '',
+        csrf: '',
+        editingId: null,
+        reduceMotion,
+        onDocClick: null,
+        onDocSubmit: null,
+        init() {
+            this.brand = this.$el.dataset.brand || '';
+            this.cartUrl = this.$el.dataset.cartUrl || '/shop/cart';
+            this.addUrl = this.$el.dataset.addUrl || '/shop/cart/add';
+            this.checkoutUrl = this.$el.dataset.checkoutUrl || '/shop/checkout';
+            this.csrf = this.$el.dataset.csrf || '';
+            this.onDocClick = (event) => this.handleDocClick(event);
+            this.onDocSubmit = (event) => this.handleDocSubmit(event);
+            document.addEventListener('click', this.onDocClick);
+            document.addEventListener('submit', this.onDocSubmit, true);
+            document.querySelectorAll('[data-shop-cart-control]').forEach((el) => {
+                el.setAttribute('aria-controls', 'shop-cart-drawer');
+                el.setAttribute('aria-haspopup', 'dialog');
+            });
+        },
+        destroy() {
+            if (this.onDocClick) {
+                document.removeEventListener('click', this.onDocClick);
+            }
+            if (this.onDocSubmit) {
+                document.removeEventListener('submit', this.onDocSubmit, true);
+            }
+            document.body.style.overflow = '';
+        },
+        get backdropBind() {
+            return this.reduceMotion ? {} : { ['x-transition.opacity.duration.200ms']: true };
+        },
+        headers() {
+            return {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': this.csrf,
+            };
+        },
+        takeMutationResult(res, data, successAnnounce) {
+            const next = applyMutationResult({
+                items: this.items,
+                upsell: this.upsell,
+                count: this.count,
+                subtotalDisplay: this.subtotalDisplay,
+                freeShipping: this.freeShipping,
+            }, res, data);
+            this.items = next.items;
+            this.upsell = next.upsell;
+            this.count = next.count;
+            this.subtotalDisplay = next.subtotalDisplay;
+            this.freeShipping = next.freeShipping;
+            this.error = next.error;
+            if (res && res.ok) {
+                if (successAnnounce) {
+                    this.announce = successAnnounce;
+                }
+                this.syncHeaderCounts();
+            } else if (next.message) {
+                this.announce = next.message;
+            }
+            return Boolean(res && res.ok);
+        },
+        syncHeaderCounts() {
+            document.querySelectorAll('[data-shop-cart-count]').forEach((el) => {
+                el.textContent = String(this.count);
+            });
+            document.querySelectorAll('[data-shop-cart-control]').forEach((el) => {
+                const noun = this.count === 1 ? 'item' : 'items';
+                const current = el.getAttribute('aria-label') || '';
+                const label = current.toLowerCase().indexOf('bag') === 0 ? 'Bag' : 'Cart';
+                el.setAttribute('aria-label', label + ', ' + this.count + ' ' + noun);
+            });
+        },
+        readBody(res) {
+            return res.json().then((data) => ({ res, data })).catch(() => ({ res, data: null }));
+        },
+        show(trigger) {
+            this.lastTrigger = trigger || this.lastTrigger;
+            if (this.open) {
+                // Already open (e.g. an upsell add): keep the user's focus where it is.
+                return;
+            }
+            this.open = true;
+            document.body.style.overflow = 'hidden';
+            this.setBackgroundInert(true);
+            this.$nextTick(() => this.$refs.closeBtn && this.$refs.closeBtn.focus());
+        },
+        close() {
+            if (! this.open) {
+                return;
+            }
+            this.open = false;
+            document.body.style.overflow = '';
+            this.setBackgroundInert(false);
+            this.$nextTick(() => this.restoreFocus());
+        },
+        // aria-modal alone does not remove the page from the accessibility tree in every
+        // AT; mark every top-level sibling of the drawer root inert while it is open.
+        setBackgroundInert(on) {
+            const root = this.$root;
+            Array.from(document.body.children).forEach((el) => {
+                if (el === root || el.contains(root)) {
+                    return;
+                }
+                if (on) {
+                    if (! el.hasAttribute('inert')) {
+                        el.setAttribute('inert', '');
+                        el.setAttribute('data-shop-drawer-inert', '');
+                    }
+                } else if (el.hasAttribute('data-shop-drawer-inert')) {
+                    el.removeAttribute('inert');
+                    el.removeAttribute('data-shop-drawer-inert');
+                }
+            });
+        },
+        restoreFocus() {
+            const target = chooseFocusRestoreTarget({
+                lastTrigger: this.lastTrigger,
+                headerControls: Array.from(document.querySelectorAll('[data-shop-cart-control]')),
+                mobileToggle: document.querySelector('button[aria-controls="mobile-nav-panel"]'),
+            });
+            if (target && target.focus) {
+                target.focus();
+                return;
+            }
+            const body = document.body;
+            body.setAttribute('tabindex', '-1');
+            body.focus();
+            body.removeAttribute('tabindex');
+        },
+        handleDocClick(event) {
+            const control = event.target && event.target.closest && event.target.closest('[data-shop-cart-control]');
+            if (! control) {
+                return;
+            }
+            // Leave modifier/secondary clicks (open in new tab/window) and anything already
+            // handled to the browser: the href fallback is the correct behaviour there.
+            if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                return;
+            }
+            event.preventDefault();
+            this.lastTrigger = control;
+            this.refresh().then(() => this.show(control));
+        },
+        handleDocSubmit(event) {
+            const form = event.target;
+            if (! form || ! form.getAttribute) {
+                return;
+            }
+            const action = form.getAttribute('action') || '';
+            if (action.indexOf('/shop/cart/add') === -1) {
+                return;
+            }
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const trigger = form.querySelector('[type="submit"]') || form;
+            const name = form.getAttribute('data-product-name') || 'item';
+            this.postAdd(new FormData(form), name, trigger, form);
+        },
+        refresh() {
+            return fetch(this.cartUrl, { headers: this.headers() })
+                .then((res) => this.readBody(res))
+                .then(({ res, data }) => this.takeMutationResult(res, data))
+                .catch(() => this.takeMutationResult(null, null));
+        },
+        postAdd(body, name, trigger, form) {
+            return fetch(this.addUrl, {
+                method: 'POST',
+                headers: this.headers(),
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => {
+                const ok = this.takeMutationResult(res, data, 'Added ' + name + ' to cart');
+                if (ok) {
+                    this.show(trigger);
+                }
+                return { ok, message: this.error };
+            }).catch(() => {
+                this.takeMutationResult(null, null);
+                return { ok: false, message: this.error };
+            }).then((outcome) => {
+                if (form && form.dispatchEvent) {
+                    form.dispatchEvent(new CustomEvent('shop-cart-add', { detail: outcome }));
+                }
+                return outcome;
+            });
+        },
+        addUpsell(offer) {
+            const body = new URLSearchParams();
+            body.set('_token', this.csrf);
+            body.set('product_slug', offer.slug);
+            body.set('variant_id', String(offer.add_variant_id));
+            body.set('qty', '1');
+            this.postAdd(body, offer.name, this.lastTrigger);
+        },
+        mutate(itemId, method, extra) {
+            const body = new URLSearchParams();
+            body.set('_token', this.csrf);
+            body.set('_method', method);
+            Object.keys(extra || {}).forEach((key) => body.set(key, extra[key]));
+            return fetch(this.cartUrl + '/' + itemId, {
+                method: 'POST',
+                headers: Object.assign({ 'Content-Type': 'application/x-www-form-urlencoded' }, this.headers()),
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => this.takeMutationResult(res, data))
+            .catch(() => this.takeMutationResult(null, null));
+        },
+        setQty(item, qty) {
+            if (qty <= 0) {
+                this.removeItem(item);
+                return;
+            }
+            this.mutate(item.id, 'PATCH', { qty: String(qty) });
+        },
+        removeItem(item) {
+            this.mutate(item.id, 'DELETE', {});
+        },
+        startEdit(item) {
+            this.editingId = this.editingId === item.id ? null : item.id;
+        },
+        saveEdit(item, form) {
+            const body = new FormData(form);
+            body.set('_token', this.csrf);
+            body.set('_method', 'PATCH');
+            return fetch(this.cartUrl + '/' + item.id + '/personalisation', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body,
+            }).then((res) => this.readBody(res))
+            .then(({ res, data }) => {
+                this.takeMutationResult(res, data);
+                if (res && res.ok) {
+                    this.editingId = null;
+                }
+            }).catch(() => this.takeMutationResult(null, null));
+        },
+        trap(event) {
+            if (! this.open) {
+                return;
+            }
+            const root = document.getElementById('shop-cart-drawer');
+            if (! root) {
+                return;
+            }
+            const focusable = Array.from(root.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+                .filter((el) => isVisibleFocusTarget(el));
+            if (! focusable.length) {
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (! event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        },
+    };
+}
+</script>
+    
+    <script>
+        function paintShopLucideIcons() {
+            if (window.lucide) {
+                window.lucide.createIcons({ attrs: { 'stroke-width': '2' } });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', paintShopLucideIcons);
+        document.addEventListener('alpine:initialized', paintShopLucideIcons);
+    </script>
+</body>
+</html>

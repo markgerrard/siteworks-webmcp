@@ -1,0 +1,35 @@
+[
+    {
+        "type": "hero",
+        "variant": "boxed-left",
+        "__options": {
+            "form_input_style": "boxed",
+            "form_surface": "flat-cream",
+            "form_trust_style": "chips-under-button"
+        }
+    },
+    {
+        "type": "services",
+        "variant": "photo-cards",
+        "__options": {
+            "form_input_style": "boxed",
+            "form_surface": "flat-cream",
+            "form_trust_style": "chips-under-button"
+        }
+    },
+    {
+        "type": "portfolio_strip",
+        "item_ids": {
+            "__count": 3
+        },
+        "variant": "dark-band",
+        "__options": {
+            "form_input_style": "boxed",
+            "form_surface": "flat-cream",
+            "form_trust_style": "chips-under-button"
+        }
+    },
+    {
+        "type": "cta"
+    }
+]

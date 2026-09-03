@@ -1,0 +1,1 @@
+// Livewire handles AJAX requests

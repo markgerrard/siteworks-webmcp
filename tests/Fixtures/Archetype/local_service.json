@@ -1,0 +1,44 @@
+{
+    "name": "Bracken & Bloom Garden Services",
+    "summary": "Friendly independent gardening and landscaping service covering Bristol and the villages around it.",
+    "vibe": "neighbourhood, warm, reliable",
+    "archetype": "local_service",
+    "products": [
+        "Regular lawn care",
+        "Hedge trimming",
+        "Garden clearance",
+        "Planting and borders",
+        "One-off tidy-ups"
+    ],
+    "audience": "Homeowners across Bristol and North Somerset who want a trusted regular gardener",
+    "differentiators": [
+        "Weekly or fortnightly visits, same person each time",
+        "Seasonal programme included with contract",
+        "Fully insured, DBS-checked team"
+    ],
+    "tone": "warm, practical, local",
+    "sample_headline": "Gardens That Look Cared-For All Year.",
+    "contact": {
+        "phones": ["0117 555 440"],
+        "emails": ["hello@brackenbloom.co.uk"]
+    },
+    "geo": {
+        "service_area": "Bristol and North Somerset villages",
+        "hq": "Bristol",
+        "scope": "local",
+        "suburbs": [
+            "Clifton", "Redland", "Bishopston", "Montpelier", "Stokes Croft",
+            "Southville", "Bedminster", "Easton", "St Werburghs", "Horfield",
+            "Westbury-on-Trym", "Henleaze"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "8",
+        "insurance": "£2m public liability",
+        "trade_bodies": ["Professional Gardeners' Guild"],
+        "credentials": ["RHS Level 2 Horticulture"]
+    },
+    "founded_year": 2017,
+    "reviews": {"average": 4.7, "count": 89},
+    "palette": ["#2d6a4f", "#d4a373"]
+}

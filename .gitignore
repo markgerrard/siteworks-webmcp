@@ -1,0 +1,93 @@
+*.log
+.DS_Store
+.env
+.env.api
+.env.backup
+.env.production
+docker-compose.override.yml
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/build-agents
+/public/build-customer
+/public/build-site-public
+/public/build-editor-preview
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+.playwright-mcp/
+Users/
+tmp/
+testing/
+
+# Local tooling / agent runtime artefacts
+.claude/
+# Local backups of secret-bearing config. Both separators: some scripts write
+# .env.bak.<ts>, others .env.bak-<label>-<ts>. Committing either would push
+# live DB/API credentials to the remote.
+.env.bak*
+*.bak-*
+*.png
+!docs/design-system/**/*.png
+!public/images/sw-mark*.png
+!public/favicon-*.png
+!public/apple-touch-icon.png
+!public/marketing/**/*.png
+!demo/sample-inputs/*.png
+
+# Scratch + dev-only tooling — not shipped
+*-snapshot.md
+/llm-playground/
+
+# Parked junk drawer — stray screenshots, stale env backups, one-off scratch
+# files swept out of the repo root. Never shipped, never committed.
+/cruft/
+.antigravitycli/
+
+# Host-local agent-bridge / test-DB rollback state. The real
+# `.env.test-db.do` holds managed-cluster credentials; `.example` is the
+# committed template. `.env.bridge-local.bak` snapshots the local Redis
+# bridge config so it can be restored per host.
+.env.test-db.do
+.env.bridge-local.bak
+/experiments/
+
+# Local test env files. These carry real credentials and a real APP_KEY; only the
+# .example templates belong in git.
+/.env.testing
+/.env.test-db.local
+/.env.test-db.laneb
+
+# bin/test-worktree per-lane phpunit configs
+.phpunit-lane-*.xml
+
+# Demo seed assets are shipped with the repo (fictional Camino Bakehouse site 64).
+!database/demo/**
+
+# Runtime demo sqlite + generated APP_KEY (named volume in compose).
+/storage/demo/
+
+# Local Playwright dogfood runs (committed copy lives at docs/provenance/demo/dogfood.mjs).
+/storage/app/demo-dogfood/
+
+# Maintainer-only notes; never shipped
+docs/SUBMISSION.md
+docs/SUBMISSION-*.md

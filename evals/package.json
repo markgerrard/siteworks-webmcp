@@ -1,0 +1,8 @@
+{
+  "name": "siteworks-webmcp-evals",
+  "private": true,
+  "description": "Standalone harness for Chrome's webmcp-evals over the SiteWorks tool schemas. Installed and run ONLY on the eval machine (model key required there) — never part of the app's npm ci.",
+  "devDependencies": {
+    "webmcp-evals": "^0.0.4"
+  }
+}

@@ -1,0 +1,48 @@
+name: siteworks-webmcp-demo
+
+# One process, no external services: PHP-FPM + nginx in one container,
+# SQLite on a named volume, sync queue, file cache/session, local media disks:
+# public media is served statically from storage/app/public; private media
+# (customer personalisation images) sits in storage/app/private and is only
+# reachable through the app's signed route.
+services:
+  demo:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      args:
+        SURFACE: all
+    restart: unless-stopped
+    ports:
+      - "${DEMO_PORT:-8090}:80"
+    env_file:
+      - .env.demo
+    environment:
+      - DEMO_MODE=1
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/html/storage/demo/demo.sqlite
+      - QUEUE_CONNECTION=sync
+      - CACHE_STORE=file
+      - SESSION_DRIVER=file
+      - FILESYSTEM_DISK=local
+      - MEDIA_DISK=public
+      - MEDIA_PRIVATE_DISK=local
+      - BROADCAST_CONNECTION=log
+      - MAIL_MAILER=log
+      - FORCE_HTTPS=false
+      - SITE_USE_VERSIONED_RENDERER=true
+    volumes:
+      - demo-data:/var/www/html/storage/demo
+      - demo-media:/var/www/html/storage/app/public
+      - demo-private:/var/www/html/storage/app/private
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/up || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  demo-data:
+  demo-media:
+  demo-private:

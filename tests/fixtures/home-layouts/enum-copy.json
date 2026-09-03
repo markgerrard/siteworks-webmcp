@@ -1,0 +1,22 @@
+{
+    "classic": {
+        "label": "Classic",
+        "description": "The standard layout — centred hero, icon service cards, reviews carousel."
+    },
+    "editorial": {
+        "label": "Editorial",
+        "description": "Featured ledger services on a contrast band, unnumbered brand-manifesto trust, ghost-numeral process stepper."
+    },
+    "showcase": {
+        "label": "Showcase",
+        "description": "Photo-led layout — boxed hero panel, photo service cards, a featured-projects band, and a bold accent CTA."
+    },
+    "precision": {
+        "label": "Precision",
+        "description": "Marker listing — panel-left hero, two-column marker services, trust and process, with a contrast process band."
+    },
+    "banded": {
+        "label": "Banded",
+        "description": "Full-bleed split bands — alternating photo and brand-panel services, banded checklist trust with image pane, checklist steps."
+    }
+}

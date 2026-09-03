@@ -1,0 +1,49 @@
+{
+    "name": "Merewether Tax Advisory",
+    "summary": "Chartered tax advisory practice for owner-managed businesses — R&D claims, EIS, succession, and structure reviews for London SMEs.",
+    "vibe": "credentialed, advisory, measured",
+    "archetype": "professional_service",
+    "products": [
+        "R&D tax relief claims",
+        "EIS and SEIS advisory",
+        "Corporate structure review",
+        "Succession and exit planning",
+        "Capital gains tax planning"
+    ],
+    "audience": "Owner-managed businesses, founders, and high-income individuals who need chartered tax advice, not bookkeeping",
+    "differentiators": [
+        "Chartered Tax Advisers (CTA) lead every engagement",
+        "Specialist in technology-sector R&D claims — £12m claimed for clients in 2025",
+        "Fee transparency: scoped proposal before any engagement"
+    ],
+    "tone": "measured, credentialed, precise",
+    "sample_headline": "Chartered Tax Advice, Plainly Delivered.",
+    "contact": {
+        "phones": ["020 3555 6600"],
+        "emails": ["enquiries@merewether-tax.co.uk"]
+    },
+    "geo": {
+        "service_area": "London and South East",
+        "hq": "London",
+        "scope": "regional",
+        "suburbs": [
+            "City of London", "Farringdon", "Shoreditch", "Canary Wharf",
+            "Richmond", "Wimbledon"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "14",
+        "insurance": "£10m professional indemnity",
+        "trade_bodies": ["Chartered Institute of Taxation", "ATT"],
+        "credentials": ["CTA (Chartered Tax Adviser)", "ACA (ICAEW)"]
+    },
+    "founded_year": 2011,
+    "reviews": {"average": 4.9, "count": 42},
+    "audience_segments": [
+        "Founders and owner-managers",
+        "Tech companies claiming R&D",
+        "High-net-worth individuals",
+        "Family businesses planning succession"
+    ],
+    "palette": ["#1a2e4a", "#9b8259"]
+}

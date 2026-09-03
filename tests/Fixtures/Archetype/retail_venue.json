@@ -1,0 +1,51 @@
+{
+    "name": "The Nutmeg Coffee House",
+    "summary": "Independent speciality coffee shop in the Northern Quarter — single-origin roasters, homemade bakes, and a quiet reading corner.",
+    "vibe": "warm, considered, caffeinated",
+    "archetype": "retail_venue",
+    "products": [
+        "Speciality single-origin coffee",
+        "Homemade cakes and pastries",
+        "Brunch menu",
+        "Private hire for small events",
+        "Retail beans and merchandise"
+    ],
+    "audience": "Coffee enthusiasts, remote workers, and locals looking for a calm third space in the city",
+    "differentiators": [
+        "Beans roasted weekly in-house",
+        "Rotating monthly exhibition from local artists",
+        "Dog-friendly back room with quiet hours 2-4pm"
+    ],
+    "tone": "warm, literary, community-first",
+    "sample_headline": "Speciality Coffee & Small Everyday Pleasures.",
+    "contact": {
+        "phones": ["0161 555 550"],
+        "emails": ["hello@nutmegcoffee.co.uk"]
+    },
+    "geo": {
+        "service_area": "Manchester Northern Quarter",
+        "hq": "Manchester",
+        "scope": "local",
+        "suburbs": [
+            "Northern Quarter", "Ancoats", "Piccadilly", "City Centre",
+            "New Islington", "Deansgate"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "6",
+        "trade_bodies": ["Speciality Coffee Association"],
+        "credentials": ["SCA Barista Foundation"]
+    },
+    "founded_year": 2019,
+    "reviews": {"average": 4.8, "count": 567},
+    "opening_hours": {
+        "Mon": "7:30–17:00",
+        "Tue": "7:30–17:00",
+        "Wed": "7:30–17:00",
+        "Thu": "7:30–19:00",
+        "Fri": "7:30–19:00",
+        "Sat": "8:00–18:00",
+        "Sun": "9:00–16:00"
+    },
+    "palette": ["#5a3a2a", "#e2b96b"]
+}

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Wrapper: bin/demo up|down|logs|reset
+# `reset` stops the stack and deletes the named volumes (demo-data, demo-media, demo-private).
+set -euo pipefail
+cd "$(dirname "$0")/.."
+cmd="${1:-up}"
+shift || true
+case "$cmd" in
+  up|down|logs) exec docker compose "$cmd" "$@" ;;
+  reset)
+    docker compose down
+    docker volume rm -f siteworks-webmcp-demo_demo-data siteworks-webmcp-demo_demo-media siteworks-webmcp-demo_demo-private
+    ;;
+  *)
+    echo "usage: bin/demo up|down|logs|reset" >&2
+    exit 1
+    ;;
+esac

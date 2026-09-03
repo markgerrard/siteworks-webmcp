@@ -1,0 +1,49 @@
+{
+    "name": "Claredon Bathroom Design",
+    "summary": "Bespoke bathroom design studio creating considered, spa-quality spaces for Edinburgh and Glasgow homes.",
+    "vibe": "considered, elevated, design-led",
+    "archetype": "premium_specialist",
+    "products": [
+        "Bespoke bathroom design",
+        "Wet-room installation",
+        "Heritage bathroom restoration",
+        "Accessible bathrooms",
+        "Design consultation"
+    ],
+    "audience": "Homeowners planning a considered renovation who value process and finish over fastest-available",
+    "differentiators": [
+        "In-house design studio — 3D walkthroughs before any build",
+        "Project managed end to end, single point of contact",
+        "Partnership with UK artisan tile and stone suppliers"
+    ],
+    "tone": "quiet, confident, design-literate",
+    "sample_headline": "Bathrooms, Considered.",
+    "contact": {
+        "phones": ["0131 555 330"],
+        "emails": ["studio@claredon-design.co.uk"]
+    },
+    "geo": {
+        "service_area": "Edinburgh, Glasgow, and Central Belt",
+        "hq": "Edinburgh",
+        "scope": "regional",
+        "suburbs": [
+            "Edinburgh", "Leith", "Glasgow", "Stirling", "Dunfermline"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "9",
+        "insurance": "£5m professional indemnity",
+        "trade_bodies": ["KBSA", "BIID"],
+        "credentials": ["RIBA-registered lead designer"]
+    },
+    "founded_year": 2016,
+    "reviews": {"average": 5.0, "count": 21},
+    "case_study": {
+        "title": "A grade-II Georgian townhouse in New Town",
+        "body": "Six-week fit of a principal ensuite in a listed terrace — heritage-sensitive plumbing routes, hand-finished marble, and original cornices preserved.",
+        "client": "Private client, Edinburgh New Town",
+        "stat": "6 weeks",
+        "stat_label": "start to finish"
+    },
+    "palette": ["#0f2537", "#c8a980"]
+}

@@ -1,0 +1,14 @@
+[
+    {
+        "type": "hero"
+    },
+    {
+        "type": "services"
+    },
+    {
+        "type": "reviews_summary"
+    },
+    {
+        "type": "cta"
+    }
+]

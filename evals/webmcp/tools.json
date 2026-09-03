@@ -1,0 +1,2141 @@
+{
+  "tools": [
+    {
+      "name": "siteworks.add_section",
+      "description": "Adds a section to the page draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "type",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "before_section_id": {
+            "type": "string",
+            "description": "Insert before the section this id names. At least one of position, before_section_id and after_section_id is required; the anchors are mutually exclusive."
+          },
+          "after_section_id": {
+            "type": "string",
+            "description": "Insert after the section this id names. At least one of position, before_section_id and after_section_id is required; the anchors are mutually exclusive."
+          },
+          "variant": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object"
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.apply_theme_token_preset",
+      "description": "Copies a named token preset onto the draft composition under existing site keys. Staff only; does not publish. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the preset whose token map is copied onto this site. Existing site keys win."
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.assign_media",
+      "description": "Assigns a library asset to a live chrome slot (brand_row). Writes sites.brand_image_media_id and keeps brand_image_path in sync; does not publish a draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "target",
+          "media_id"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "brand_row"
+            ]
+          },
+          "media_id": {
+            "type": "integer"
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.describe_import_products",
+      "description": "Describes the import_products contract: canonical fields, per-format examples, and limits. Read-only; writes nothing. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.draft_category_content",
+      "description": "Updates draft category copy, FAQs, and metadata for this site. The shop snapshot rebuild publishes the rendered storefront state. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "description_long": {
+            "type": "string"
+          },
+          "faqs": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "required": [
+                "q",
+                "a"
+              ],
+              "properties": {
+                "q": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "a": {
+                  "type": "string",
+                  "maxLength": 1200
+                }
+              }
+            }
+          },
+          "meta_title": {
+            "type": "string",
+            "maxLength": 70
+          },
+          "meta_description": {
+            "type": "string",
+            "maxLength": 170
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.edit_field",
+      "description": "Writes a single draft field on a page section. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. For `rich` fields, `value` is a TipTap document object. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "stored_index",
+          "field_path",
+          "value"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "field_path": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ],
+            "description": "Field value. For rich fields, pass a TipTap document object."
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "parent_origin": {
+            "type": "string"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.export_products",
+      "description": "Exports the CURRENT merchant catalogue as a downloadable csv/md/json file via a short-lived signed URL (5-minute expiry). Read-only: makes no draft changes, does not publish, and does not rebuild the snapshot. The tool response never carries the catalogue itself, only a download_url. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "csv",
+              "md",
+              "json"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "any",
+              "published",
+              "draft",
+              "archived"
+            ]
+          },
+          "category_slug": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_brand_context",
+      "description": "Reads the brand profile as captured (palette, fonts, tone) plus current draft hero and logo URLs. For the EFFECTIVE palette, text-safe contrast colours, and design tokens the renderer actually applies, use get_brand_system instead. The `hero` value is the hero each page renders, including `__shared_service_hero`. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.get_brand_system",
+      "description": "Reads the effective brand palette, text-safe contrast colours, fonts, layout tokens, and design-brief rationale — the source of truth for the site's colours and design system as rendered (get_brand_context returns the raw captured profile instead). Makes no draft changes. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.get_draft_diff",
+      "description": "Reads unpublished page, composition, and asset-selection diffs. Values are truncated at 512 bytes; media bytes are never returned. Never publishes. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "include_values": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_effective_hero_state",
+      "description": "Reads published-effective and draft-effective hero state and why that asset won. `section_field` and `placeholder` are reported from the hero section, not from the shared page image map. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "page_type": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_job_status",
+      "description": "Reads async generation job status. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "job_ref"
+        ],
+        "properties": {
+          "job_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_logo_assets",
+      "description": "Reads the site's selected logo and any stored variants, minting short-lived signed download URLs. Makes no draft changes. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.get_page_structure",
+      "description": "Reads the draft page section structure without changing it. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "page_id"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_site_context",
+      "description": "Reads this site's identity, shop flags, and the tool names this actor may call on this surface. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.get_video_state",
+      "description": "Lists hero video versions with active and drafted state and persisted probe metadata. reduced_motion_fallback is always none because the hero markup has no prefers-reduced-motion gate. Never probes and never dispatches. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.import_products",
+      "description": "Imports catalogue products as drafts from json, csv, or md. This does not publish anything — every imported product stays hidden on the live site until a human publishes it. Committing (dry_run false) requires a fresh idempotency_key: a reused key returns the earlier commit's receipt instead of importing again. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "format",
+          "data"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "integer"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "csv",
+              "md"
+            ]
+          },
+          "data": {
+            "type": "string"
+          },
+          "source_label": {
+            "type": "string"
+          },
+          "dry_run": {
+            "type": "boolean"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "idempotency_key": {
+            "type": "string"
+          },
+          "plan_token": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.inspect_draft",
+      "description": "Composes unpublished diffs and pre-publish findings; never triggers a capture and carries no screenshot flag. Never publishes. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.list_image_versions",
+      "description": "Lists hero, logo, or media versions for a site. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "scope"
+        ],
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "hero",
+              "logo",
+              "media"
+            ]
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page_type": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "string"
+          },
+          "page_id": {
+            "type": "integer"
+          },
+          "field_path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.list_media",
+      "description": "Reads the site media library (non-provisional assets) with the same filters as the library grid. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "generated",
+              "uploaded",
+              "imported"
+            ]
+          },
+          "tag": {
+            "type": "string"
+          },
+          "usage": {
+            "type": "string",
+            "enum": [
+              "used",
+              "unused"
+            ]
+          },
+          "q": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.list_theme_token_presets",
+      "description": "Lists named theme token presets (name, description, token count). Staff only. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.manage_category",
+      "description": "Creates, moves, or deletes a catalogue category. This does not publish anything — the live storefront updates when the shop snapshot rebuilds. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "upsert",
+              "move",
+              "delete"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "parent_slug": {
+            "type": "string"
+          },
+          "is_anchor": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "visible",
+              "hidden"
+            ]
+          },
+          "meta_title": {
+            "type": "string"
+          },
+          "meta_description": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "name",
+              "newest",
+              "price_asc",
+              "price_desc"
+            ]
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.move_section",
+      "description": "Reorders a section in the page draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "to",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "from": {
+            "type": "integer"
+          },
+          "section_id": {
+            "type": "string",
+            "description": "Stable identifier of the section to move. At least one of from and section_id is required; when both are given they must name the same section."
+          },
+          "to": {
+            "type": "integer",
+            "description": "Destination slot (a position, not a section)."
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.publish_summary",
+      "description": "Reads pending publish summary; never publishes. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.remove_section",
+      "description": "Removes a section from the page draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer"
+          },
+          "section_id": {
+            "type": "string",
+            "description": "Stable section identifier. At least one of stored_index and section_id is required; when both are given they must name the same section."
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.restore_image_version",
+      "description": "Writes a draft hero or logo selection; does not activate it. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "scope",
+          "version_id"
+        ],
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "hero",
+              "logo"
+            ]
+          },
+          "version_id": {
+            "type": "integer"
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "page_type": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "string"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.restore_media_version",
+      "description": "Assigns a previous site media version to a draft field. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. This operation targets image fields only. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "stored_index",
+          "field_path",
+          "media_id"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "field_path": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "media_id": {
+            "type": "integer"
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.save_theme_token_preset",
+      "description": "Snapshots the current site token_overrides as a named preset. Copy, do not link. Staff only; does not mutate the draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name for the snapshot of the current site token_overrides."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional human description of the preset."
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.seed_product_reviews",
+      "description": "Creates published product reviews with source seed so a new store can be populated. This does not publish a draft and does not enable the public review form. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviews"
+        ],
+        "properties": {
+          "reviews": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 40,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "product_slug",
+                "rating",
+                "title",
+                "body",
+                "author_name"
+              ],
+              "properties": {
+                "product_slug": {
+                  "type": "string"
+                },
+                "rating": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "author_name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.select_logo",
+      "description": "Writes a draft logo selection; does not flip is_selected. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "concept_id"
+        ],
+        "properties": {
+          "concept_id": {
+            "type": "integer"
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_fulfilment",
+      "description": "Writes the live sites.fulfilment JSON (delivery zones, collect, shipping, widget). Does not publish a draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "fulfilment"
+        ],
+        "properties": {
+          "fulfilment": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "delivery": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "zones": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "name",
+                        "prefixes",
+                        "fee_cents"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "prefixes": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8,
+                            "pattern": "^[A-Z0-9]+$"
+                          }
+                        },
+                        "fee_cents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "free_over_cents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "lead_time": {
+                          "type": "string",
+                          "maxLength": 40
+                        },
+                        "min_order_cents": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "collect": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "address": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "hours": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "lead_time": {
+                    "type": "string",
+                    "maxLength": 40
+                  }
+                }
+              },
+              "shipping": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              },
+              "widget": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "remember_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 365
+                  }
+                }
+              }
+            }
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_hero_copy_style",
+      "description": "Writes the live sites.hero_copy_style chrome knob (preset|plain|panel|boxed). Does not publish a draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "hero_copy_style"
+        ],
+        "properties": {
+          "hero_copy_style": {
+            "type": "string",
+            "enum": [
+              "preset",
+              "plain",
+              "panel",
+              "boxed"
+            ]
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_logo_media",
+      "description": "Creates an unselected uploaded logo concept from site media and writes only the draft selection; does not flip is_selected. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "media_id"
+        ],
+        "properties": {
+          "media_id": {
+            "type": "integer"
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_nav_container",
+      "description": "Writes the live sites.nav_container_style and sites.nav_container_fill chrome knobs. Does not publish a draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "nav_container_style",
+          "nav_container_fill"
+        ],
+        "properties": {
+          "nav_container_style": {
+            "type": "string",
+            "enum": [
+              "none",
+              "pill",
+              "plate",
+              "band"
+            ]
+          },
+          "nav_container_fill": {
+            "type": "string",
+            "enum": [
+              "surface",
+              "glass",
+              "brand",
+              "pattern"
+            ]
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_nav_label",
+      "description": "Writes the drafted composition nav item label for a page. Never writes generated_pages.nav_label. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "label"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_section_style",
+      "description": "Merges operator style_overrides onto a section instance in the page draft. Staff only; does not publish. Also accepts per-section texture tokens: texture (library key, none, or image), texture_opacity (0.01–0.5), texture_size (sm|md|lg), texture_image_path (site media path), texture_image_mode (tile|cover). Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "page_id",
+          "section_id",
+          "tokens",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "section_id": {
+            "type": "string",
+            "description": "Stable section identifier of the instance to restyle."
+          },
+          "tokens": {
+            "type": "object",
+            "description": "Patch map keyed by emitted CSS variable names without the -- prefix. Explicit null removes a key.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_shop_index_blocks",
+      "description": "Writes the live sites.shop_index_blocks list of product rows and trust strips under a blocks_revision compare-and-swap. Does not publish a draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "blocks",
+          "blocks_revision"
+        ],
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "required": [
+                "heading"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "featured_products",
+                    "trust_strip"
+                  ]
+                },
+                "source": {
+                  "type": "string"
+                },
+                "limit": {
+                  "type": "integer"
+                },
+                "sources": {
+                  "type": "string",
+                  "enum": [
+                    "site",
+                    "product",
+                    "both"
+                  ]
+                },
+                "layout": {
+                  "type": "string",
+                  "enum": [
+                    "grid",
+                    "strip",
+                    "carousel"
+                  ]
+                },
+                "heading": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "reviews_label": {
+                  "type": "string",
+                  "maxLength": 30
+                },
+                "min_reviews": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000
+                },
+                "external": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "maxLength": 30
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "rating": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 5,
+                      "multipleOf": 0.1
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "blocks_revision": {
+            "type": "string",
+            "description": "Current revision token. Provoke a stale_revision error and retry with its error payload's blocks_revision value."
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_theme_tokens",
+      "description": "Merges operator token_overrides into the draft composition theme. Staff only; does not publish. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tokens"
+        ],
+        "properties": {
+          "tokens": {
+            "type": "object",
+            "description": "Patch map keyed by emitted CSS variable names without the -- prefix. Explicit null removes a key.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_title_emphasis",
+      "description": "Writes title emphasis ranges on a page section, atomically with an optional title. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "stored_index",
+          "ranges",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ranges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "start",
+                "length"
+              ],
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "length": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "parent_origin": {
+            "type": "string"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_variant",
+      "description": "Sets a section variant on the page draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "variant",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer"
+          },
+          "section_id": {
+            "type": "string",
+            "description": "Stable section identifier. At least one of stored_index and section_id is required; when both are given they must name the same section."
+          },
+          "variant": {
+            "type": "string"
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.draft_product",
+      "description": "Creates a draft catalogue product with priced variants. This does not publish anything — the product stays hidden on the live site until a human publishes it. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "category_slug",
+          "variants"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category_slug": {
+            "type": "string"
+          },
+          "tax_class_code": {
+            "type": "string"
+          },
+          "variants": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "sku",
+                "price_pence"
+              ],
+              "properties": {
+                "sku": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9-]{1,32}$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "price_pence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10000000
+                },
+                "weight_grams": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100000
+                }
+              }
+            }
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                "pairs": {
+                  "type": "array",
+                  "maxItems": 40,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "label",
+                      "value"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "maxLength": 60
+                      },
+                      "value": {
+                        "type": "string",
+                        "maxLength": 200
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "customer_inputs": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "slug",
+                "label",
+                "kind"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "text",
+                    "textarea",
+                    "choice",
+                    "image"
+                  ]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "max_chars": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 500
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "max_files": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3
+                },
+                "help": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              }
+            }
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.get_product",
+      "description": "Reads one catalogue product. This does not publish anything — draft products stay hidden on the live site until a human publishes them. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.list_products",
+      "description": "Reads the merchant catalogue. Drafts stay hidden on the live storefront until a human publishes them. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "archived",
+              "any"
+            ]
+          },
+          "category_slug": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.set_product_image",
+      "description": "Attaches an existing site media object to a draft product. This does not publish anything and never accepts image bytes. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "media_id",
+          "product_revision"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "product_revision": {
+            "type": "integer"
+          },
+          "media_id": {
+            "type": "integer"
+          },
+          "sort_order": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 19
+          },
+          "alt": {
+            "type": "string"
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.update_draft_product",
+      "description": "Updates a draft catalogue product. Published and archived products are refused. This does not publish anything. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "product_revision"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "product_revision": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tax_class_code": {
+            "type": "string"
+          },
+          "primary_category_id": {
+            "type": "integer"
+          },
+          "extra_category_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "sku",
+                "price_pence"
+              ],
+              "properties": {
+                "sku": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9-]{1,32}$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "price_pence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10000000
+                },
+                "weight_grams": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100000
+                }
+              }
+            }
+          },
+          "catalogue_revision": {
+            "type": "integer"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                "pairs": {
+                  "type": "array",
+                  "maxItems": 40,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "label",
+                      "value"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "maxLength": 60
+                      },
+                      "value": {
+                        "type": "string",
+                        "maxLength": 200
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "customer_inputs": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "slug",
+                "label",
+                "kind"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "text",
+                    "textarea",
+                    "choice",
+                    "image"
+                  ]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "max_chars": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 500
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "max_files": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3
+                },
+                "help": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              }
+            }
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for catalogue_revision. At least one of expected_revision and catalogue_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.skill_add_product_with_imagery",
+      "description": "Protocol for adding a single product with images. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.skill_export_catalogue",
+      "description": "Protocol for exporting this store's catalogue and brand for use elsewhere. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.skill_import_catalogue_from_source",
+      "description": "Protocol for turning a merchant's flyer, price list or document into draft products. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "siteworks.undo_revision",
+      "description": "Writes a new draft revision restoring the current draft's recorded parent; never moves published_revision_id. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "revision_id",
+          "structure_epoch"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "revision_id": {
+            "type": "integer",
+            "description": "The draft revision to undo; must be the current draft_revision_id."
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.update_asset_metadata",
+      "description": "Updates the live site_media row (alt text, caption, attribution, role, focal point). This change is not drafted: editor metadata writes do not invalidate the public cache, so it lands on the next uncached public render rather than instantly repainting cached HTML. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "media_id"
+        ],
+        "properties": {
+          "media_id": {
+            "type": "integer"
+          },
+          "alt_text": {
+            "type": "string",
+            "maxLength": 250
+          },
+          "caption": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "attribution": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "focal_point": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.update_brand_theme",
+      "description": "Writes colour/typography override tokens into the draft composition theme; contrast-gated. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "tokens": {
+            "type": "object",
+            "properties": {
+              "primary": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "accent": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "tertiary": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "surface": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "surface_alt": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "border": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "text": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              },
+              "text_muted": {
+                "type": "string",
+                "pattern": "^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+              }
+            }
+          },
+          "fonts": {
+            "type": "object",
+            "properties": {
+              "display": {
+                "type": "string",
+                "enum": [
+                  "fraunces",
+                  "dm-serif-display",
+                  "playfair-display",
+                  "space-grotesk",
+                  "bricolage-grotesque",
+                  "archivo-black"
+                ]
+              },
+              "body": {
+                "type": "string",
+                "enum": [
+                  "inter",
+                  "manrope",
+                  "figtree",
+                  "source-sans-3",
+                  "nunito-sans"
+                ]
+              }
+            }
+          },
+          "brand_section_scheme": {
+            "type": "string",
+            "enum": [
+              "bold",
+              "soft"
+            ]
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.update_form",
+      "description": "Replaces a form section definition on the draft. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "stored_index",
+          "fields"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "submit_label": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "parent_origin": {
+            "type": "string"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.update_page_settings",
+      "description": "Writes draft page SEO meta_title and meta_description into the page revision. Rejects slug, page_type, status, visibility, canonical_url and social_image. Does not publish. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page_id"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "meta_title": {
+            "type": "string"
+          },
+          "meta_description": {
+            "type": "string"
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Rejected: slug changes need a redirects table plus a drafted page_type."
+          },
+          "page_type": {
+            "type": "string",
+            "description": "Rejected: page_type changes need a redirects table plus a drafted page_type."
+          },
+          "status": {
+            "type": "string",
+            "description": "Rejected: status changes need a drafted status."
+          },
+          "visibility": {
+            "type": "string",
+            "description": "Rejected: visibility changes need a drafted status."
+          },
+          "canonical_url": {
+            "type": "string",
+            "description": "Rejected: canonical_url needs a dedicated column."
+          },
+          "social_image": {
+            "type": "string",
+            "description": "Rejected: social_image needs a dedicated column and renderer changes."
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for revision_base. At least one of expected_revision and revision_base is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.upload_image",
+      "description": "Ingests site media and optionally assigns it to a draft image field; hero-family background assignments also register an inactive hero version and make it the drafted hero selection. Result `receipt.preview` of `unconfirmed` means the edit is saved but the preview may be stale — do not retry; `deferred` means the preview is on another page or being edited. `data_base64` must be un-wrapped strict base64 with no line breaks. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data_base64"
+        ],
+        "properties": {
+          "data_base64": {
+            "type": "string"
+          },
+          "composition_revision": {
+            "type": "integer"
+          },
+          "mime": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "page_id": {
+            "type": "integer"
+          },
+          "stored_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "field_path": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "revision_base": {
+            "type": "integer"
+          },
+          "structure_epoch": {
+            "type": "integer"
+          },
+          "expected_revision": {
+            "type": "integer",
+            "description": "Alias for composition_revision. At least one of expected_revision and composition_revision is required."
+          }
+        }
+      }
+    },
+    {
+      "name": "siteworks.validate_draft",
+      "description": "Reads structured pre-publish findings without publishing or fetching external URLs; some section variants paint literal colours a theme write cannot move. `error.job_ref === null` on `job_running` means there is nothing to poll. `quota_exceeded` means the site's monthly cap has been reached.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page_id": {
+            "type": "integer"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "alt_text_missing",
+                "broken_internal_link",
+                "contrast_below_aa",
+                "invalid_form",
+                "layout_not_checked",
+                "meta_description_long",
+                "meta_title_long",
+                "missing_image",
+                "published_video_image_conflict",
+                "theme_token_bypass",
+                "unchecked_external_link",
+                "video_image_conflict"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

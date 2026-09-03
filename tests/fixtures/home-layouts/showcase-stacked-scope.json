@@ -1,0 +1,34 @@
+[
+    {
+        "type": "hero",
+        "__page_type": "home",
+        "variant": "boxed-left",
+        "__options": {
+            "form_input_style": "boxed",
+            "form_surface": "flat-cream",
+            "form_trust_style": "chips-under-button"
+        }
+    },
+    {
+        "type": "services",
+        "__page_type": "home",
+        "variant": "photo-cards",
+        "__options": {
+            "form_input_style": "boxed",
+            "form_surface": "flat-cream",
+            "form_trust_style": "chips-under-button"
+        }
+    },
+    {
+        "type": "hero",
+        "__page_type": "about"
+    },
+    {
+        "type": "services",
+        "__page_type": "service"
+    },
+    {
+        "type": "values",
+        "__page_type": "home"
+    }
+]

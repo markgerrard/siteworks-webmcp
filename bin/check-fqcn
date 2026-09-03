@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+// Gate: every App\... FQCN referenced anywhere in the tree must have a file under app/.
+// Reference forms scanned: `use App\X;`, `App\X::class`, and quoted 'App\X' / "App\\X" literals.
+// A line carrying the marker `check-fqcn-ignore` is skipped (deliberate references to absent classes).
+// Usage: php bin/check-fqcn   (exit 0 = clean, 1 = missing classes listed with referrers)
+$root = dirname(__DIR__);
+$have = [];
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator("$root/app")) as $f) {
+    if ($f->isFile() && $f->getExtension() === 'php') {
+        $have['App\\'.str_replace('/', '\\', substr($f->getPathname(), strlen($root) + 5, -4))] = 1;
+    }
+}
+$miss = [];
+$re = '/use\s+(App\\\\[A-Za-z0-9_\\\\]+)\s*;|(App\\\\[A-Za-z0-9_\\\\]+)::class|[\'"](App\\\\[A-Za-z0-9_\\\\]+)[\'"]/';
+foreach (['app', 'tests', 'database', 'resources', 'routes', 'config', 'bootstrap'] as $dir) {
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator("$root/$dir")) as $f) {
+        if (! $f->isFile() || ! in_array($f->getExtension(), ['php', 'json', 'stub'], true)) { continue; }
+        $src = implode("\n", array_filter(explode("\n", file_get_contents($f->getPathname()) ?: ''), fn ($l) => ! str_contains($l, 'check-fqcn-ignore')));
+        $src = str_replace('\\\\', '\\', $src);
+        preg_match_all($re, $src, $m, PREG_SET_ORDER);
+        foreach ($m as $h) {
+            $c = $h[1] !== '' ? $h[1] : (($h[2] ?? '') !== '' ? $h[2] : ($h[3] ?? ''));
+            if ($c !== '' && ! str_ends_with($c, '\\') && ! isset($have[$c])) { $miss[$c][substr($f->getPathname(), strlen($root) + 1)] = 1; }
+        }
+    }
+}
+ksort($miss);
+foreach ($miss as $c => $files) { echo "MISSING $c <- ".implode(', ', array_keys($files))."\n"; }
+echo 'TOTAL MISSING: '.count($miss)."\n";
+exit($miss ? 1 : 0);

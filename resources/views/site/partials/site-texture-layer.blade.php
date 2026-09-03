@@ -1,0 +1,1 @@
+{!! \App\Support\Textures\TextureLayer::html($siteTexture ?? null, $section ?? null, $textureDefaultOn ?? false, $site ?? null, $textureSoftFilter ?? false) !!}

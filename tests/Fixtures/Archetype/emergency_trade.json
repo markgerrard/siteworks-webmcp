@@ -1,0 +1,44 @@
+{
+    "name": "Acme 24h Plumbing",
+    "summary": "24/7 emergency plumber and boiler-breakdown specialist covering Wigan and the surrounding towns.",
+    "vibe": "urgent, dependable, local",
+    "archetype": "emergency_trade",
+    "products": [
+        "Emergency boiler breakdowns",
+        "Burst pipe repairs",
+        "Blocked drains",
+        "Water leaks",
+        "Radiator repairs",
+        "Central heating faults"
+    ],
+    "audience": "Homeowners and landlords with urgent plumbing problems",
+    "differentiators": [
+        "Under 60-minute response across the borough",
+        "Gas Safe registered engineers",
+        "Upfront pricing, no call-out fee at weekends"
+    ],
+    "tone": "urgent, reassuring, plain-English",
+    "sample_headline": "Boiler Out? We're With You in Under an Hour.",
+    "contact": {
+        "phones": ["01942 555 100"],
+        "emails": ["help@acme24plumbing.co.uk"]
+    },
+    "geo": {
+        "service_area": "Wigan and surrounding areas",
+        "hq": "Wigan",
+        "scope": "local",
+        "suburbs": [
+            "Wigan", "Ashton-in-Makerfield", "Hindley", "Standish",
+            "Atherton", "Leigh", "Orrell", "Pemberton", "Ince"
+        ]
+    },
+    "credibility": {
+        "years_in_business": "12",
+        "insurance": "£5m public liability",
+        "trade_bodies": ["Gas Safe", "CIPHE"],
+        "credentials": ["City & Guilds Plumbing Level 3"]
+    },
+    "founded_year": 2013,
+    "reviews": {"average": 4.8, "count": 312},
+    "palette": ["#d62828", "#003049"]
+}
